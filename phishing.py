@@ -1,36 +1,54 @@
-from flask import Flask, render_template, request, redirect, url_for
+import os
+import sys
 
-from project.forms import MessageForm
-from configs.config import Config
+from flask import Flask, render_template
+from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config.from_object(Config)
+app.config.from_object('config')
+
+db = SQLAlchemy(app)
 
 
-@app.route('/')
-def index():
-    return render_template('html/index.html')
+########################
+# Configure Secret Key #
+########################
+def install_secret_key(app, filename='secret_key'):
+    """Configure the SECRET_KEY from a file
+    in the instance directory.
+
+    If the file does not exist, print instructions
+    to create it from a shell with a random key,
+    then exit.
+    """
+    filename = os.path.join(app.instance_path, filename)
+
+    try:
+        app.config['SECRET_KEY'] = open(filename, 'rb').read()
+    except IOError:
+        print('Error: No secret key. Create it with:')
+        full_path = os.path.dirname(filename)
+        if not os.path.isdir(full_path):
+            print('mkdir -p {filename}'.format(filename=full_path))
+        print('head -c 24 /dev/urandom > {filename}'.format(filename=filename))
+        sys.exit(1)
 
 
-@app.route('/about')
-def about():
-    return render_template('html/about.html')
+if not app.config['DEBUG']:
+    install_secret_key(app)
 
 
-@app.route('/message/', methods=['get', 'post'])
-def message():
-    form = MessageForm()
-    if form.validate_on_submit():
-        name = form.name.data
-        email = form.email.data
-        message = form.message.data
-        print(name)
-        print(email)
-        print("\nData received. Now redirecting...")
-        return redirect(url_for('message'))
-
-    return render_template('html/message.html', form=form)
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
 
 
-if __name__ == "__main__":
-    app.run(host="localhost", port=5000, debug=True)
+from app.users.views import mod as usersModule
+
+app.register_blueprint(usersModule)
+
+# Later on you'll import the other blueprints the same way:
+# from app.comments.views import mod as commentsModule
+# from app.posts.views import mod as postsModule
+# app.register_blueprint(commentsModule)
+# app.register_blueprint(postsModule)

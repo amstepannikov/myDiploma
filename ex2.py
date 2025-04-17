@@ -19,3 +19,10 @@ def submit():
 
 if __name__ == "__main__":
     app.run(host="localhost", port=5000, debug=True)
+
+# Активируем виртуальное окружение virtualenv и инициализируем БД:
+# user@Machine:~/Projects/dev$ . env/bin/activate
+# (env)user@Machine:~/Projects/dev$ python shell.py
+# >>> from app import db
+# >>> db.create_all()
+# >>> exit()

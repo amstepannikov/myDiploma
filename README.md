@@ -38,4 +38,17 @@ WSGI-приложение
   * Flask-SQLAlchemy - работа с Базами Данных
   * Flask-Mail - работа с почтой (основан на smtplib)
   * Flask-Login - аунтификация
+  * Flask-Bcrypt - функционал для хеширования и проверки паролей
 * SQLite - база данных, основанная на файле
+
+### Источники
+#### Статьи
+[Проектирование простых приложений в Flask (хабр)](https://habr.com/ru/articles/275099/)  
+[Мега-Учебник Flask (хабр)](https://habr.com/ru/articles/193242/)
+[Flask. Наполняем «флягу» функционалом](https://habr.com/ru/articles/251415/)
+
+#### Документация 
+[Flask-SQLAlchemy](https://flask-sqlalchemy.readthedocs.io/en/stable/)
+
+#### Полезные ссылки
+[Дизайнер SQL таблиц](https://sql.toad.cz/?)
