@@ -44,7 +44,7 @@ WSGI-приложение
 ### Источники
 #### Статьи
 [Проектирование простых приложений в Flask (хабр)](https://habr.com/ru/articles/275099/)  
-[Мега-Учебник Flask (хабр)](https://habr.com/ru/articles/193242/)
+[Мега-Учебник Flask (хабр)](https://habr.com/ru/articles/193242/)  
 [Flask. Наполняем «флягу» функционалом](https://habr.com/ru/articles/251415/)
 
 #### Документация 
