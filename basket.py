@@ -32,5 +32,10 @@ def message():
     return render_template('html/message.html', form=form)
 
 
+@app.route('/user/<id>/')
+def user_profile(id):
+    return "Profile page of user #{}".format(id)
+
+
 if __name__ == "__main__":
     app.run(host="localhost", port=5000, debug=True)
