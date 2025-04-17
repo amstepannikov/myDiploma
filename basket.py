@@ -6,6 +6,14 @@ from configs.config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
+@app.errorhandler(404)
+def http_404_handler(error):
+    return "<p>HTTP 404 Error Encountered</p>", 404
+
+@app.errorhandler(500)
+def http_500_handler(error):
+    return "<p>HTTP 500 Error Encountered</p>", 500
+
 
 @app.route('/')
 def index():
@@ -30,6 +38,11 @@ def message():
         return redirect(url_for('message'))
 
     return render_template('html/message.html', form=form)
+
+
+@app.route('/user/<id>/')
+def user_profile(id):
+    return "Profile page of user #{}".format(id)
 
 
 if __name__ == "__main__":
