@@ -1,25 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>{% block title %}My Site{% endblock %}</title>
-    {% block css %}
-    <link rel="stylesheet" href="/static/css/reset-min.css" />
-    <link rel="stylesheet" href="/static/css/main.css" />
-    {% endblock %}
-    {% block script %}
-    <script src="/static/js/main.js" type="text/javascript"></script>
-    {% endblock %}
-  </head>
-  <body>
-    <div id="header">{% block header %}{% endblock %}</div>
-    <div id="messages-wrap">
-      <div id="messages">
-        {% for category, msg in get_flashed_messages(with_categories=true) %}
-          <p class="message flash-{{ category }}">{{ msg }}</p>
-        {% endfor %}
-      </div>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Регистрация</h1>
+        <form action="{{ url_for('register') }}" method="post">
+            <div class="form-group">
+                <label for="username">Имя пользователя:</label>
+                <input type="text" id="username" name="username" placeholder="Введите имя пользователя" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Электронная почта:</label>
+                <input type="email" id="email" name="email" placeholder="Введите email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Подтверждение пароля:</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Повторите пароль" required>
+            </div>
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        <p>Уже есть аккаунт? <a href="{{ url_for('login') }}">Войдите</a></p>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
     </div>
-    <div id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">{% block footer %}{% endblock %}</div>
-  </body>
+</body>
 </html>
