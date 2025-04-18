@@ -8,9 +8,9 @@ from configs.config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
-#from flask.ext.sqlalchemy import SQLAlchemy
-# инициализируем объект БД
-#db = SQLAlchemy(app)
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy(app) # инициализируем объект БД
 
 
 # from flask.ext.login import LoginManager, current_user

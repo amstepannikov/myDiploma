@@ -29,16 +29,17 @@ WSGI-приложение
 * test - тестирование
   * fixture - фикстуры в pytest
 * utils - вспомогательные скрипты и утилиты
+  * works_db.py - утилита для работы с базой данных
 
 ### Используемый стек
 * python 3.12
-* Flask - фреймворк для веб-разработки
+* Flask - фреймворк для веб-разработки (`pip install Flask`)
   * Jinja2 - шаблонизатор
-  * WTForms (Flask-WTF) - генератор WT-форм для Flask
-  * Flask-SQLAlchemy - работа с Базами Данных
-  * Flask-Mail - работа с почтой (основан на smtplib)
-  * Flask-Login - аунтификация
-  * Flask-Bcrypt - функционал для хеширования и проверки паролей
+  * WTForms (Flask-WTF) - генератор WT-форм для Flask (`pip install -U Flask-SQLAlchemy`)
+  * Flask-SQLAlchemy - работа с Базами Данных (`pip install -U Flask-SQLAlchemy`)
+  * Flask-Mail - работа с почтой, основан на smtplib (`pip install Flask-Mail`)
+  * Flask-Login - аунтификация (`pip install flask-login`)
+  * Flask-Bcrypt - функционал для хеширования и проверки паролей (`pip install flask-bcrypt`)
 * SQLite - база данных, основанная на файле
 
 ### Источники
@@ -47,8 +48,20 @@ WSGI-приложение
 [Мега-Учебник Flask (хабр)](https://habr.com/ru/articles/193242/)  
 [Flask. Наполняем «флягу» функционалом](https://habr.com/ru/articles/251415/)
 
-#### Документация 
-[Flask-SQLAlchemy](https://flask-sqlalchemy.readthedocs.io/en/stable/)
+#### Документация
+[Flask](https://flask.palletsprojects.com/en/stable/)  
+[Jinja2](https://jinja.palletsprojects.com/en/stable/)  
+[Flask WTF](https://flask-wtf.readthedocs.io/en/1.2.x/)  
+[Flask-SQLAlchemy](https://flask-sqlalchemy.readthedocs.io/en/stable/)  
+[Flask-Mail](https://flask-mail.readthedocs.io/en/latest/)  
+[Flask-Login](https://flask-login.readthedocs.io/en/latest/)  
 
 #### Полезные ссылки
 [Дизайнер SQL таблиц](https://sql.toad.cz/?)
+
+### Разное
+Загрузить библиотеки в requirements.txt (из каталога проекта):  
+`pip freeze > requirements.txt`  
+Инсталлировать все библиотеки из requirements.txt:  
+`pip install -r requirements.txt`  
+
