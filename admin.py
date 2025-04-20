@@ -29,6 +29,7 @@ db = SQLAlchemy(app) # инициализируем объект БД
 # def before_request():
 #     g.user = current_user
 
+menu = [1, 2, 3]
 
 @app.route('/')
 def index():
@@ -37,7 +38,7 @@ def index():
 
 @app.route('/about')
 def about():
-    return render_template('html/about.html')
+    return render_template('html/about.html', title='О программе', menu=menu)
 
 
 @app.route('/message/', methods=['get', 'post'])
@@ -81,9 +82,9 @@ def login():
 def admin():
     if not loggedin:
         return redirect(url_for('login')) # если не залогинен, выполнять редирект на страницу входа
-    return render_template('html/admin.html')
+    return render_template('html/admin.html', title='Админка')
 
 
 if __name__ == "__main__":
-    loggedin = False
+    loggedin = True
     app.run(host="localhost", port=5000, debug=True)

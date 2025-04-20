@@ -51,10 +51,10 @@ with app.app_context():
 def home():
     try:
         users = User.query.with_entities(User.id, User.username).all()
-        return render_template('home.html', users=users)
+        return render_template('html/home.html', users=users)
     except Exception as e:
         flash(f'Ошибка базы данных: {str(e)}')
-        return render_template('home.html', users=[])
+        return render_template('html/home.html', users=[])
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -103,7 +103,7 @@ def register():
         flash('Пользователь успешно зарегистрирован! Теперь войдите.')
         return redirect(url_for('login'))
 
-    return render_template('register.html')
+    return render_template('html/register.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -124,7 +124,7 @@ def login():
             flash('Неверное имя пользователя или пароль!')
             return redirect(url_for('login'))
 
-    return render_template('login.html')
+    return render_template('html/login.html')
 
 
 @app.route('/delete/<int:user_id>')
