@@ -40,6 +40,7 @@ WSGI-приложение
   * Flask-Mail - работа с почтой, основан на smtplib (`pip install Flask-Mail`)
   * Flask-Login - аунтификация (`pip install flask-login`)
   * Flask-Bcrypt - функционал для хеширования и проверки паролей (`pip install flask-bcrypt`)
+  * Flask-Bootstrap - CSS фреймворк (`pip install flask-bootstrap`)
 * SQLite - база данных, основанная на файле
 
 ### Источники
@@ -55,6 +56,7 @@ WSGI-приложение
 [Flask-SQLAlchemy](https://flask-sqlalchemy.readthedocs.io/en/stable/)  
 [Flask-Mail](https://flask-mail.readthedocs.io/en/latest/)  
 [Flask-Login](https://flask-login.readthedocs.io/en/latest/)  
+[Flask-Bootstrap](https://getbootstrap.com/docs/3.3/getting-started/)  
 
 #### Полезные ссылки
 [Дизайнер SQL таблиц](https://sql.toad.cz/?)

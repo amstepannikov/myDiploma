@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask_bootstrap import Bootstrap
 
 
 from project.forms import MessageForm, RegistrationForm
@@ -11,6 +12,7 @@ app.config.from_object(Config)
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy(app) # инициализируем объект БД
+bootstrap = Bootstrap(app) # Инициализируем объект Bootstrap
 
 
 # from flask.ext.login import LoginManager, current_user
@@ -34,6 +36,20 @@ menu = [1, 2, 3]
 @app.route('/')
 def index():
     return render_template('html/index.html')
+
+
+@app.route('/ex1', methods=['GET', 'POST'])
+def index_ex1():
+    server_message = ''
+    client_message = ''
+    if request.method == 'POST':
+        client_message = request.form.get('message')
+    if client_message == 'hi':
+        server_message = 'Hello'
+    elif client_message != '':
+        server_message = 'How are you?'
+
+    return render_template('html/index_ex1.html', message=server_message)
 
 
 @app.route('/about')
