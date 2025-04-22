@@ -27,7 +27,7 @@ class Config:
     SECRET_KEY = os.environ.get('c018c942bbf625466a3ea0369918eac1f254fecc48452f56da2f1cf839c9e749') or 'any_key'
 
     # Путь к файлу базы данных
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data/app.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data/site.db')
 
     DATABASE_CONNECT_OPTIONS = {}
 

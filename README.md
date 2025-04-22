@@ -16,6 +16,7 @@ WSGI-приложение
 ### Структура каталогов проекта
 * configs - конфигурации
 * data - данные
+  * app.db - файл с sqlite базой 
 * lib - вспомогательные функции
 * logs - файлы логирования
 * models - модель данных
@@ -30,10 +31,11 @@ WSGI-приложение
   * fixture - фикстуры в pytest
 * utils - вспомогательные скрипты и утилиты
   * works_db.py - утилита для работы с базой данных
+  * create_secret_key.py - создает секретный ключ
 
 ### Используемый стек
 * python 3.12
-* Flask - фреймворк для веб-разработки (`pip install Flask`)
+* Flask - микро-фреймворк для веб-разработки (`pip install Flask`)
   * Jinja2 - шаблонизатор
   * WTForms (Flask-WTF) - генератор WT-форм для Flask (`pip install -U Flask-SQLAlchemy`)
   * Flask-SQLAlchemy - работа с Базами Данных (`pip install -U Flask-SQLAlchemy`)
@@ -41,13 +43,15 @@ WSGI-приложение
   * Flask-Login - аунтификация (`pip install flask-login`)
   * Flask-Bcrypt - функционал для хеширования и проверки паролей (`pip install flask-bcrypt`)
   * Flask-Bootstrap - CSS фреймворк (`pip install flask-bootstrap`)
-* SQLite - база данных, основанная на файле
+* SQLite - база данных, основанная на файле. Включен в Flask-SQLAlchemy.
+* Pillow - работа с изображениями
 
 ### Источники
 #### Статьи
 [Проектирование простых приложений в Flask (хабр)](https://habr.com/ru/articles/275099/)  
 [Мега-Учебник Flask (хабр)](https://habr.com/ru/articles/193242/)  
-[Flask. Наполняем «флягу» функционалом](https://habr.com/ru/articles/251415/)
+[Flask. Наполняем «флягу» функционалом (хабр)](https://habr.com/ru/articles/251415/)
+[Начинающему веб-мастеру: делаем одностраничник на Bootstrap (хабр)](https://habr.com/ru/companies/ruvds/articles/350758/)
 
 #### Документация
 [Flask](https://flask.palletsprojects.com/en/stable/)  
@@ -57,6 +61,7 @@ WSGI-приложение
 [Flask-Mail](https://flask-mail.readthedocs.io/en/latest/)  
 [Flask-Login](https://flask-login.readthedocs.io/en/latest/)  
 [Flask-Bootstrap](https://getbootstrap.com/docs/3.3/getting-started/)  
+[Pillow](https://pillow.readthedocs.io/en/stable/)  
 
 #### Полезные ссылки
 [Дизайнер SQL таблиц](https://sql.toad.cz/?)

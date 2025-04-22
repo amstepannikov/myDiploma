@@ -4,24 +4,7 @@ from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationE
 from flask_login import current_user
 from flask_wtf.file import FileField, FileAllowed
 
-from models.model_ex1 import User
-
-
-class MessageForm(FlaskForm):
-    name = StringField('Name: ', validators=[DataRequired()])
-    email = StringField('Email: ', validators=[Email()])
-    message = TextAreaField('Message: ', validators=[DataRequired()])
-    submit = SubmitField("Submit")
-
-
-class LoginForm1(FlaskForm):
-    name = StringField('Name: ', validators=[DataRequired()])
-    email = StringField('Email: ', validators=[Email()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    submit = SubmitField("Submit")
-
-class RegistrationForm1(FlaskForm):
-    password_repeat = PasswordField('Повторите пароль', validators=[DataRequired(), EqualTo('password')])
+from users_management.models import User
 
 
 class RegistrationForm(FlaskForm):
@@ -37,6 +20,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Это имя занято. Пожалуйста, выберите другое.')
 
     def validate_email(self, email):
+        print(email)
         user = User.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError('Этот email занят. Пожалуйста, выберите другой.')
@@ -84,22 +68,3 @@ class ResetPasswordForm(FlaskForm):
     password = PasswordField('Пароль:', validators=[DataRequired()])
     confirm_password = PasswordField('Подтвердите пароль', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Переустановить пароль')
-
-    # from flask.ext.wtf import Form, RecaptchaField
-    # from wtforms import TextField, PasswordField, BooleanField
-    # from wtforms.validators import Required, EqualTo, Email
-    #
-    # class LoginForm(Form):
-    #   email = TextField('Email address', [Required(), Email()])
-    #   password = PasswordField('Password', [Required()])
-    #
-    # class RegisterForm(Form):
-    #   name = TextField('NickName', [Required()])
-    #   email = TextField('Email address', [Required(), Email()])
-    #   password = PasswordField('Password', [Required()])
-    #   confirm = PasswordField('Repeat Password', [
-    #       Required(),
-    #       EqualTo('password', message='Passwords must match')
-    #       ])
-    #   accept_tos = BooleanField('I accept the TOS', [Required()])
-    #   recaptcha = RecaptchaField()
