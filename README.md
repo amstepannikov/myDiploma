@@ -44,7 +44,8 @@ WSGI-приложение
   * Flask-Bcrypt - функционал для хеширования и проверки паролей (`pip install flask-bcrypt`)
   * Flask-Bootstrap - CSS фреймворк (`pip install flask-bootstrap`)
 * SQLite - база данных, основанная на файле. Включен в Flask-SQLAlchemy.
-* Pillow - работа с изображениями
+* Pillow - работа с изображениями (`pip install Pillow`)
+* ItsDangerous - обеспечение безопасности передачи данных (`pip install itsdangerous`)
 
 ### Источники
 #### Статьи
@@ -62,6 +63,7 @@ WSGI-приложение
 [Flask-Login](https://flask-login.readthedocs.io/en/latest/)  
 [Flask-Bootstrap](https://getbootstrap.com/docs/3.3/getting-started/)  
 [Pillow](https://pillow.readthedocs.io/en/stable/)  
+[ItsDangerous](https://itsdangerous.palletsprojects.com/en/stable/)  
 
 #### Полезные ссылки
 [Дизайнер SQL таблиц](https://sql.toad.cz/?)

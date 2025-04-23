@@ -5,10 +5,10 @@ from ..configs import Config
 
 
 # Создаем страницу/макета для администрирования
-management = Blueprint('management', __name__)
+main = Blueprint('main', __name__)
 
 
-@management.route('/')
-@management.route('/home')
+@main.route('/')
+@main.route('/home')
 def home():
     return render_template('home.html')

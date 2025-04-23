@@ -1,4 +1,6 @@
-from users_management import create_app
+from my_blog import create_app
+import locale
+
 # from flask.ext.script import Manager
 # from flask.ext.migrate import Migrate, MigrateCommand
 # from app import app, db
@@ -11,6 +13,7 @@ from users_management import create_app
 # # Регистрируем команду, реализованную в виде потомка класса Command
 # manager.add_command('db', MigrateCommand)
 
+locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 app = create_app()
 
 

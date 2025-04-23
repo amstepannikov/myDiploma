@@ -31,6 +31,13 @@ class Config:
 
     DATABASE_CONNECT_OPTIONS = {}
 
+    # Почта, используемая для рассылки сообщений
+    MAIL_SERVER = 'smtp.googlemail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = 'test@gmail.com'
+    MAIL_PASSWORD = '123456'
+
     THREADS_PER_PAGE = 8
 
     WTF_CSRF_ENABLED = True
