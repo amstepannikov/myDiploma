@@ -13,7 +13,7 @@ import locale
 # # Регистрируем команду, реализованную в виде потомка класса Command
 # manager.add_command('db', MigrateCommand)
 
-locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
+locale.setlocale(locale.LC_TIME, 'ru_RU')
 app = create_app()
 
 

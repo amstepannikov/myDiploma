@@ -9,16 +9,16 @@ from my_blog.posts.forms import PostForm
 posts = Blueprint('posts', __name__)
 
 
-@posts.route("/allpost")
+@posts.route("/all_posts")
 @login_required
-def allpost():
+def all_posts():
     """
     Все посты пользователя
-    :return: возвращает шаблон allpost.html с переменной posts
+    :return: возвращает шаблон all_posts.html с переменной posts
     """
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-    return render_template('allpost.html', posts=posts)
+    return render_template('all_posts.html', posts=posts)
 
 
 @posts.route("/post/new", methods=['GET', 'POST'])
@@ -35,7 +35,7 @@ def new_post():
         db.session.add(post)
         db.session.commit()
         flash('Ваш пост создан!', 'success')
-        return redirect(url_for('posts.allpost'))
+        return redirect(url_for('posts.all_posts'))
     return render_template('create_post.html',
                            title='Новый пост', form=form, legend='Новый пост')
 
@@ -81,7 +81,7 @@ def delete_post(post_id):
     """
     Удаление поста
     :param post_id: id поста
-    :return: возвращает шаблон allpost.html с переменной posts
+    :return: возвращает шаблон all_posts.html с переменной posts
     """
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
@@ -89,6 +89,6 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     flash('Ваш пост был удален!', 'success')
-    return redirect(url_for('posts.allpost'))
+    return redirect(url_for('posts.all_posts'))
 
 

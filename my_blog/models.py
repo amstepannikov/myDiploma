@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask_login import UserMixin
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+# from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import TimestampSigner
 from flask import current_app
 
 from my_blog import db, login_manager
@@ -20,28 +21,38 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"Пользователь('{self.username}, {self.email}', '{self.image_file}')"
 
-    def get_reset_token(self, expires_sec=1800):
+    def get_reset_token(self):
         """
         Генерирует токен для сброса пароля
-        :param expires_sec: время жизни токена, по умолчанию 30 минут
         :return: строка с токеном
         """
-        s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'user_id': self.id}).decode('utf-8')
+        signer = TimestampSigner(current_app.config['SECRET_KEY'])
+        return signer.sign(str({'user_id': self.id}))
+
+        # s = TimestampSigner(current_app.config[Config.WTF_CSRF_SECRET_KEY], expires_sec)
+        # return s.dumps({'user_id': self.id}).decode('utf-8')
 
     @staticmethod
-    def verify_reset_token(token):
+    def verify_reset_token(token, max_age=1800):
         """
         Проверяет валидность токена для сброса пароля
         :param token: токен, который нужно проверить
+        :param max_age: время жизни токена, по умолчанию 30 минут
         :return: id пользователя или None
         """
-        s = Serializer(current_app.config['SECRET_KEY'])
+        signer = TimestampSigner(current_app.config['SECRET_KEY'])
+
+        # signer = token.uysign TimestampSigner(current_app.config[Config.WTF_CSRF_SECRET_KEY])
+        # s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            user_id = s.loads(token)['user_id']
+            # user_id = signer.loads(token)['user_id']
+            d = signer.unsign(token, max_age)
+            print(d)
         except Exception:
+            print(token)
             return None
-        return User.query.get(user_id)
+        # return User.query.get(user_id)
+        return None
 
 
 class Post(db.Model):
@@ -60,4 +71,8 @@ class Post(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
+    """
+    Загрузка пользователя из базы
+    :param user_id: id пользователя
+    """
     return User.query.get(int(user_id))

@@ -19,15 +19,13 @@ class Config:
     basedir = os.path.abspath(os.path.dirname(__file__))
 
     DEBUG = False
-    CSRF_ENABLED = True
-    WTF_CSRF_SECRET_KEY = 'dsofpkoasodksap'
     ADMINS = frozenset(['youremail@yourdomain.com'])
 
     # Используется для подписи cookies, при его изменении пользователям потребуется логиниться заново
-    SECRET_KEY = os.environ.get('c018c942bbf625466a3ea0369918eac1f254fecc48452f56da2f1cf839c9e749') or 'any_key'
+    SECRET_KEY = 'c018c942bbf625466a3ea0369918eac1f254fecc48452f56da2f1cf839c9e749'
 
     # Путь к файлу базы данных
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data/site.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data/app.db')
 
     DATABASE_CONNECT_OPTIONS = {}
 
@@ -35,7 +33,7 @@ class Config:
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'test@gmail.com'
+    MAIL_USERNAME = 'blog.sendmail.amstepannikov@gmail.com'
     MAIL_PASSWORD = '123456'
 
     THREADS_PER_PAGE = 8

@@ -24,7 +24,7 @@ def create_app():
     app.register_blueprint(users)
     app.register_blueprint(posts)
 
-    # добавляем конфигурацию
+    # добавляем конфигурацию, после чего к ней нужно обращаться через current_app.config['KEY']
     app.config.from_object(Config)
 
     # добавляем расширения

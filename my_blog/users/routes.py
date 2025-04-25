@@ -20,7 +20,7 @@ def register():
     """
     # Если пользователь уже залогинен, то мы не можем войти в систему
     if current_user.is_authenticated:
-        return redirect(url_for('home.html'))
+        return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
         # Хеширование пароля
@@ -42,7 +42,7 @@ def login():
     """
     # Если пользователь уже залогинен, то мы сразу переходим к постам
     if current_user.is_authenticated:
-        return redirect(url_for('posts.allposts'))
+        return redirect(url_for('posts.all_posts'))
 
     form = LoginForm()
     # Если пользователь уже есть, то мы не можем зарегистрировать пользователя с таким же адресом электронной почты
@@ -52,7 +52,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('posts.allposts'))
+            return redirect(next_page) if next_page else redirect(url_for('posts.all_posts'))
         else:
             flash('Войти не удалось. Пожалуйста, '
                   'проверьте электронную почту и пароль', 'внимание')
@@ -99,7 +99,7 @@ def logout():
     :return: redirect - возвращает на главную страницу
     """
     logout_user()
-    return redirect(url_for('management.home'))
+    return redirect(url_for('main.home'))
 
 
 @users.route("/user/<string:username>")
@@ -124,7 +124,7 @@ def reset_request():
     :return: render_template - возвращает шаблон страницы reset_request.html
     """
     if current_user.is_authenticated:
-        return redirect(url_for('posts.allposts'))
+        return redirect(url_for('posts.all_posts'))
     form = RequestResetForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -143,7 +143,8 @@ def reset_token(token):
     :return: render_template - возвращает шаблон страницы reset_token.html
     """
     if current_user.is_authenticated:
-        return redirect(url_for('posts.allpost'))
+        return redirect(url_for('posts.all_posts'))
+    print(token)
     user = User.verify_reset_token(token)
     if user is None:
         flash('Это недействительный или просроченный токен', 'warning')
