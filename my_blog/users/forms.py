@@ -83,12 +83,13 @@ class UpdateAccountForm(FlaskForm):
 
 class RequestResetForm(FlaskForm):
     """
-    Форма для запроса восстановления пароля.
+    Форма для запроса восстановления пароля, через почту
     """
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Изменить пароль')
+    email = StringField('Укажите Email вашего аккаунта', validators=[DataRequired(), Email()])
+    submit = SubmitField('Отправить письмо для изменения пароля')
 
     def validate_email(self, email):
+        """Находим юзера с данной почтой"""
         user = User.query.filter_by(email=email.data).first()
         if user is None:
             raise ValidationError('Аккаунт с данным email-адресом отсутствует. Вы можете зарегистрировать его')

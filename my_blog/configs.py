@@ -29,12 +29,21 @@ class Config:
 
     DATABASE_CONNECT_OPTIONS = {}
 
+    GOOGLE_OAUTH_CLIENT_ID = '' # убрать при Push в GitHub
+    GOOGLE_OAUTH_CLIENT_SECRET = '' # убрать при Push в GitHub
+
     # Почта, используемая для рассылки сообщений
-    MAIL_SERVER = 'smtp.googlemail.com'
+    # MAIL_SERVER = 'smtp.googlemail.com'
+    # MAIL_PORT = 587
+    # MAIL_USE_TLS = True
+    # MAIL_USERNAME = '********' # убрать при Push в GitHub
+    # MAIL_PASSWORD = '*********' # убрать при Push в GitHub
+    MAIL_SERVER = 'smtp.mail.ru'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'blog.sendmail.amstepannikov@gmail.com'
-    MAIL_PASSWORD = '123456'
+    MAIL_USERNAME = '*****' # убрать при Push в GitHub
+    MAIL_PASSWORD = '*********' # убрать при Push в GitHub
+    DEFAULT_MAIL_SENDER = '********'
 
     THREADS_PER_PAGE = 8
 

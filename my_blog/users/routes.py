@@ -1,7 +1,8 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
+from flask_dance.contrib.google import make_google_blueprint, google
 
-from my_blog import db, bcrypt
+from my_blog import db, bcrypt, google_blueprint
 from my_blog.models import User, Post
 from my_blog.configs import Config
 from my_blog.users.utils import save_picture, send_reset_email
@@ -44,7 +45,16 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('posts.all_posts'))
 
+    # регистрация через google
+    # if not google.authorized:
+    #     return f'<a href="{url_for("google.login")}">Sign in with Google</a>'
+    # resp = google.get('/oauth2/v2/userinfo')  # Получаем профиль пользователя
+    # assert resp.ok, resp.text
+    # email = resp.json()['email']
+    # print(resp)
+
     form = LoginForm()
+
     # Если пользователь уже есть, то мы не можем зарегистрировать пользователя с таким же адресом электронной почты
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -98,7 +108,15 @@ def logout():
     Выход из системы
     :return: redirect - возвращает на главную страницу
     """
+    token = google_blueprint.token["access_token"]
+    resp = google.post(
+        "https://accounts.google.com/o/oauth2/revoke",
+        params={"token": token},
+        headers={"Content-Type": "application/x-www-form-urlencoded"}
+    )
+    assert resp.ok, resp.text
     logout_user()
+    del google_blueprint.token
     return redirect(url_for('main.home'))
 
 
@@ -128,6 +146,7 @@ def reset_request():
     form = RequestResetForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
+        print(user)
         send_reset_email(user)
         flash('На почту отправлено письмо с '
               'инструкциями по сбросу пароля.', 'info')

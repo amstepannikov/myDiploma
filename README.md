@@ -17,15 +17,15 @@ WSGI-приложение
 * my_blog - проект блога
   * data - данные
     * app.db - файл с sqlite базой блога
-  * main - главный макет (blueprint)
+  * main - макет по умолчанию (blueprint)
     * routes.py - маршруты
-  * posts - макеты постов
+  * posts - макеты постов (blueprint)
     * forms - формы
     * routes.py - маршруты
   * templates - шаблоны страниц HTML
     * reset_request.html - запрос на сброс пароля
     * reset_token.html - ввод нового пароля
-  * users - макеты пользователей
+  * users - макеты пользователей (blueprint)
     * forms - формы
     * routes.py - маршруты
     * utils.py - утилиты для работы с пользователями
@@ -64,6 +64,7 @@ WSGI-приложение
   * Flask-Login - аунтификация (`pip install flask-login`)
   * Flask-Bcrypt - функционал для хеширования и проверки паролей (`pip install flask-bcrypt`)
   * Flask-Bootstrap - CSS фреймворк (`pip install flask-bootstrap`)
+  * Flask-Dance - авторизация через OAuth (`pip install flask-dance google-auth-oauthlib`)
 * SQLite - база данных, основанная на файле. Включен в Flask-SQLAlchemy.
 * Pillow - работа с изображениями (`pip install Pillow`)
 * ItsDangerous - обеспечение безопасности передачи данных (`pip install itsdangerous`)
@@ -75,7 +76,7 @@ WSGI-приложение
 [Flask. Наполняем «флягу» функционалом (хабр)](https://habr.com/ru/articles/251415/)
 [Начинающему веб-мастеру: делаем одностраничник на Bootstrap (хабр)](https://habr.com/ru/companies/ruvds/articles/350758/)
 
-#### Документация
+#### Документация используемых библиотек
 [Flask](https://flask.palletsprojects.com/en/stable/)  
 [Jinja2](https://jinja.palletsprojects.com/en/stable/)  
 [Flask WTF](https://flask-wtf.readthedocs.io/en/1.2.x/)  
@@ -83,11 +84,13 @@ WSGI-приложение
 [Flask-Mail](https://flask-mail.readthedocs.io/en/latest/)  
 [Flask-Login](https://flask-login.readthedocs.io/en/latest/)  
 [Flask-Bootstrap](https://getbootstrap.com/docs/3.3/getting-started/)  
+[Flask-Dance](https://flask-dance.readthedocs.io/en/latest/#)  
 [Pillow](https://pillow.readthedocs.io/en/stable/)  
 [ItsDangerous](https://itsdangerous.palletsprojects.com/en/stable/)  
 
 #### Полезные ссылки
-[Дизайнер SQL таблиц](https://sql.toad.cz/?)
+[Дизайнер SQL таблиц](https://sql.toad.cz/?)  
+[DB Browser for SQLite - программа просмотра базы SQLite](https://sqlitebrowser.org/dl/)  
 
 ### Разное
 Загрузить библиотеки в requirements.txt (из каталога проекта):  
