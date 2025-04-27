@@ -97,4 +97,3 @@ WSGI-приложение
 `pip freeze > requirements.txt`  
 Инсталлировать все библиотеки из requirements.txt:  
 `pip install -r requirements.txt`  
-
