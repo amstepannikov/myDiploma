@@ -108,15 +108,15 @@ def logout():
     Выход из системы
     :return: redirect - возвращает на главную страницу
     """
-    token = google_blueprint.token["access_token"]
-    resp = google.post(
-        "https://accounts.google.com/o/oauth2/revoke",
-        params={"token": token},
-        headers={"Content-Type": "application/x-www-form-urlencoded"}
-    )
-    assert resp.ok, resp.text
+    # token = google_blueprint.token["access_token"]
+    # resp = google.post(
+    #     "https://accounts.google.com/o/oauth2/revoke",
+    #     params={"token": token},
+    #     headers={"Content-Type": "application/x-www-form-urlencoded"}
+    # )
+    # assert resp.ok, resp.text
     logout_user()
-    del google_blueprint.token
+    # del google_blueprint.token
     return redirect(url_for('main.home'))
 
 
