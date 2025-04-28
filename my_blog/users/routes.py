@@ -97,7 +97,7 @@ def account():
         posts = Post.query.filter_by(author=user) \
             .order_by(Post.date_posted.desc()) \
             .paginate(page=page, per_page=5)
-    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    image_file = url_for('static', filename='avatars/' + current_user.image_file)
     return render_template('account.html', title='Аккаунт',
                            image_file=image_file, form=form, posts=posts, user=user)
 
@@ -145,8 +145,9 @@ def reset_request():
         return redirect(url_for('posts.all_posts'))
     form = RequestResetForm()
     if form.validate_on_submit():
+        # находим пользователя с указанной почтой
         user = User.query.filter_by(email=form.email.data).first()
-        print(user)
+        # отправка письма со ссылкой на страницу смены пароля
         send_reset_email(user)
         flash('На почту отправлено письмо с '
               'инструкциями по сбросу пароля.', 'info')
@@ -157,16 +158,18 @@ def reset_request():
 @users.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
     """
-    Сбросить пароль
-    :param token: токен для сброса пароля
+    Смена пароля через ссылку из почты
+    :param token: токен для смены пароля, получаем из ссылки
     :return: render_template - возвращает шаблон страницы reset_token.html
     """
     if current_user.is_authenticated:
         return redirect(url_for('posts.all_posts'))
-    print(token)
+
+    # по токену находим пользователя
     user = User.verify_reset_token(token)
     if user is None:
         flash('Это недействительный или просроченный токен', 'warning')
+        # если пользователя не нашли, отправляем повторно на страницу запроса смены пароля
         return redirect(url_for('users.reset_request'))
     form = ResetPasswordForm()
     if form.validate_on_submit():

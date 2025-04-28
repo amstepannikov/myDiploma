@@ -1,10 +1,8 @@
 from datetime import datetime
-from flask_login import UserMixin
-# from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from itsdangerous import TimestampSigner
-from flask import current_app
 
-from my_blog import db, login_manager
+from flask_login import UserMixin
+
+from my_blog import db, login_manager, serializer
 
 
 class User(db.Model, UserMixin):
@@ -26,33 +24,27 @@ class User(db.Model, UserMixin):
         Генерирует токен для сброса пароля
         :return: строка с токеном
         """
-        signer = TimestampSigner(current_app.config['SECRET_KEY'])
-        return signer.sign(str({'user_id': self.id}))
-
-        # s = TimestampSigner(current_app.config[Config.WTF_CSRF_SECRET_KEY], expires_sec)
-        # return s.dumps({'user_id': self.id}).decode('utf-8')
+        # Данные для сериализации
+        data_to_serialize = {'user_id': self.id}
+        # Сериализация данных
+        token = serializer.dumps(data_to_serialize, salt="email-confirm")
+        return token
 
     @staticmethod
-    def verify_reset_token(token, max_age=1800):
+    def verify_reset_token(token, max_age=18000):
         """
-        Проверяет валидность токена для сброса пароля
+        Проверяет валидность токена для сброса пароля в ссылке из почты
         :param token: токен, который нужно проверить
         :param max_age: время жизни токена, по умолчанию 30 минут
-        :return: id пользователя или None
+        :return: объект User или None (в случае ошибки)
         """
-        signer = TimestampSigner(current_app.config['SECRET_KEY'])
-
-        # signer = token.uysign TimestampSigner(current_app.config[Config.WTF_CSRF_SECRET_KEY])
-        # s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            # user_id = signer.loads(token)['user_id']
-            d = signer.unsign(token, max_age)
-            print(d)
-        except Exception:
-            print(token)
-            return None
-        # return User.query.get(user_id)
-        return None
+            decoded_data = serializer.loads(token, max_age=max_age, salt="email-confirm")
+            user_id = decoded_data['user_id']
+            user = User.query.get(user_id)
+        except Exception as e:
+             return None
+        return user
 
 
 class Post(db.Model):
