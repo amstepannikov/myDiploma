@@ -1,3 +1,4 @@
+<!--Страница авторизации пользователя-->
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section" style="box-shadow: 10px 15px 10px #4a4e69;">
@@ -30,10 +31,6 @@
                     {% else %}
                         {{ form.password(class="form-control form-control-lg") }}
                     {% endif %}
-                </div>
-                <div class="form-check">
-                    {{ form.remember(class="form-check-input") }}
-                    {{ form.remember.label(class="form-check-label") }}
                 </div>
             </fieldset>
             <div class="form-group">

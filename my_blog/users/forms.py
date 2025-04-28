@@ -12,9 +12,9 @@ class RegistrationForm(FlaskForm):
     Форма для регистрации пользователя.
     """
     username = StringField('Имя пользователя:', validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('Email:', validators=[DataRequired(), Email()])
+    email = StringField('Email:', validators=[DataRequired(), Email(message='Неправильное имя почты')])
     password = PasswordField('Пароль:', validators=[DataRequired()])
-    confirm_password = PasswordField('Подтвердить пароль', validators=[DataRequired(), EqualTo('password')])
+    confirm_password = PasswordField('Подтвердить пароль', validators=[DataRequired(), EqualTo('password', message='Пароли не совпадают')])
     submit = SubmitField('Зарегистрироваться')
 
     def validate_username(self, username):
@@ -43,9 +43,8 @@ class LoginForm(FlaskForm):
     """
     Форма для авторизации пользователя.
     """
-    email = StringField('Email:', validators=[DataRequired(), Email()])
+    email = StringField('Email:', validators=[DataRequired(), Email(message='Неправильное имя почты')])
     password = PasswordField('Пароль:', validators=[DataRequired()])
-    remember = BooleanField('Напомнить пароль')
     submit = SubmitField('Войти')
 
 
@@ -54,8 +53,8 @@ class UpdateAccountForm(FlaskForm):
     Форма для обновления профиля пользователя.
     """
     username = StringField('Имя пользователя', validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    picture = FileField('Обновить фото профиля', validators=[FileAllowed(['jpg', 'png'])])
+    email = StringField('Email', validators=[DataRequired(), Email(message='Неправильное имя почты')])
+    picture = FileField('Обновить аватарку профиля', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Обновить')
 
     def validate_username(self, username):
@@ -85,7 +84,7 @@ class RequestResetForm(FlaskForm):
     """
     Форма для отправки запроса восстановления пароля, через почту
     """
-    email = StringField('Укажите Email вашего аккаунта', validators=[DataRequired(), Email()])
+    email = StringField('Укажите Email вашего аккаунта', validators=[DataRequired(), Email(message='Неправильное имя почты')])
     submit = SubmitField('Отправить письмо для изменения пароля')
 
     def validate_email(self, email):
