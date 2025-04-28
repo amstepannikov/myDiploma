@@ -1,5 +1,5 @@
 from my_blog import create_app
-import locale
+# import locale
 import os
 
 # from flask.ext.script import Manager
@@ -19,7 +19,7 @@ import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
-locale.setlocale(locale.LC_TIME, 'ru_RU')
+# locale.setlocale(locale.LC_TIME, 'ru_RU')
 app = create_app()
 
 
