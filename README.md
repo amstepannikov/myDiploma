@@ -40,6 +40,9 @@ WSGI-приложение
     * configs.py - конфигурационный файл
     * models.py - модели (пользователи, посты)
 * runner.py - запуск проекта
+* Procfile - файл для развёртывания приложений в облачных хостиногов, таких, как Heroku...
+* requirements.txt - список используемых библиотек, используется для их развертывания
+* runtime - указания версии python
 
 ### Используемый стек
 * python 3.12
@@ -52,6 +55,7 @@ WSGI-приложение
   * Flask-Bcrypt - функционал для хеширования и проверки паролей (`pip install flask-bcrypt`)
   * Flask-Bootstrap - CSS фреймворк (`pip install flask-bootstrap`)
   * Flask-Dance - авторизация через OAuth (`pip install flask-dance google-auth-oauthlib`)
+  * Flask-Gunicorn - WSGI-сервер для Python-Flask веб-приложений (`pip install gunicorn`)
 * SQLite - база данных, основанная на файле. Включен в Flask-SQLAlchemy.
 * Pillow - работа с изображениями (`pip install Pillow`)
 * ItsDangerous - обеспечение безопасности передачи данных (`pip install itsdangerous`)
@@ -72,6 +76,7 @@ WSGI-приложение
 [Flask-Login](https://flask-login.readthedocs.io/en/latest/)  
 [Flask-Bootstrap](https://getbootstrap.com/docs/3.3/getting-started/)  
 [Flask-Dance](https://flask-dance.readthedocs.io/en/latest/#)  
+[Flask-Gunicorn](https://flask.palletsprojects.com/en/stable/deploying/gunicorn/)  
 [Pillow](https://pillow.readthedocs.io/en/stable/)  
 [ItsDangerous](https://itsdangerous.palletsprojects.com/en/stable/)  
 

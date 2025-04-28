@@ -37,7 +37,7 @@ class Config:
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USERNAME = 'krivko_kod@mail.ru' # убрать при Push в GitHub
-    MAIL_PASSWORD = 'XpGPCXxc92Y4kidVa2ib' # убрать при Push в GitHub
+    MAIL_PASSWORD = '' # убрать при Push в GitHub
     DEFAULT_MAIL_SENDER = 'krivko_kod@mail.ru'
     MAIL_SUPPRESS_SEND = False # Если True, то это тестовая рассылка и письма не отправляются
 
