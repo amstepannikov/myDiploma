@@ -33,17 +33,13 @@ class Config:
     GOOGLE_OAUTH_CLIENT_SECRET = '' # убрать при Push в GitHub
 
     # Почта, используемая для рассылки сообщений
-    # MAIL_SERVER = 'smtp.googlemail.com'
-    # MAIL_PORT = 587
-    # MAIL_USE_TLS = True
-    # MAIL_USERNAME = '********' # убрать при Push в GitHub
-    # MAIL_PASSWORD = '*********' # убрать при Push в GitHub
     MAIL_SERVER = 'smtp.mail.ru'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = '*****' # убрать при Push в GitHub
-    MAIL_PASSWORD = '*********' # убрать при Push в GitHub
-    DEFAULT_MAIL_SENDER = '********'
+    MAIL_USERNAME = 'krivko_kod@mail.ru' # убрать при Push в GitHub
+    MAIL_PASSWORD = '' # убрать при Push в GitHub
+    DEFAULT_MAIL_SENDER = 'krivko_kod@mail.ru'
+    MAIL_SUPPRESS_SEND = False # Если True, то это тестовая рассылка и письма не отправляются
 
     THREADS_PER_PAGE = 8
 

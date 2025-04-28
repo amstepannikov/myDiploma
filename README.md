@@ -1,5 +1,5 @@
 # Дипломная работа
-## Организация логинов и паролей пользователей информационной системы
+## Организация логинов и паролей пользователей информационной системы "my_blog"
 WSGI-приложение  
 (Web Server Gateway Interface - стандарт взаимодействия между python-программой,
 выполняющейся на стороне сервера, и самим веб-сервером) 
@@ -17,42 +17,32 @@ WSGI-приложение
 * my_blog - проект блога
   * data - данные
     * app.db - файл с sqlite базой блога
+  * errors - макеты ошибок (blueprint)
+    * handlers.py - маршруты-обработчики ошибок
   * main - макет по умолчанию (blueprint)
     * routes.py - маршруты
   * posts - макеты постов (blueprint)
     * forms - формы
     * routes.py - маршруты
+  * static - статические файлы
+    * avatars - аватарки пользователей
+    * css - шаблоны стилей
+    * images - картинки
   * templates - шаблоны страниц HTML
-    * reset_request.html - запрос на сброс пароля
-    * reset_token.html - ввод нового пароля
-  * users - макеты пользователей (blueprint)
-    * forms - формы
-    * routes.py - маршруты
-    * utils.py - утилиты для работы с пользователями
-  * __init__.py - инициализация проекта блога
-  * configs.py - конфигурационный файл
-  * models.py - модели (пользователи, посты)
+    * errors - шаблоны ошибок
+    * reset_request.html - отправка запроса на почту на сброс пароля
+    * reset_token.html - ввод нового пароля через ссылку из почты
+    * users - макеты пользователей (blueprint)
+      * forms - формы
+      * routes.py - маршруты
+      * utils.py - утилиты для работы с пользователями
+    * __init__.py - инициализация проекта блога
+    * configs.py - конфигурационный файл
+    * models.py - модели (пользователи, посты)
 * runner.py - запуск проекта
-
-Устарело...  
-* configs - конфигурации
-* data - данные
-  * app.db - файл с sqlite базой блога
-* lib - вспомогательные функции
-* logs - файлы логирования
-* models - модель данных
-* static - статические файлы
-  * css - стили
-  * images - изображения
-* templates - шаблоны
-  * css - шаблоны стилей
-  * html - шаблоны html-страниц
-  * js - JavaScript
-* test - тестирование
-  * fixture - фикстуры в pytest
-* utils - вспомогательные скрипты и утилиты
-  * works_db.py - утилита для работы с базой данных
-  * create_secret_key.py - создает секретный ключ
+* Procfile - файл для развёртывания приложений в облачных хостиногов, таких, как Heroku...
+* requirements.txt - список используемых библиотек, используется для их развертывания
+* runtime - указания версии python
 
 ### Используемый стек
 * python 3.12
@@ -65,6 +55,7 @@ WSGI-приложение
   * Flask-Bcrypt - функционал для хеширования и проверки паролей (`pip install flask-bcrypt`)
   * Flask-Bootstrap - CSS фреймворк (`pip install flask-bootstrap`)
   * Flask-Dance - авторизация через OAuth (`pip install flask-dance google-auth-oauthlib`)
+  * Flask-Gunicorn - WSGI-сервер для Python-Flask веб-приложений (`pip install gunicorn`)
 * SQLite - база данных, основанная на файле. Включен в Flask-SQLAlchemy.
 * Pillow - работа с изображениями (`pip install Pillow`)
 * ItsDangerous - обеспечение безопасности передачи данных (`pip install itsdangerous`)
@@ -85,6 +76,7 @@ WSGI-приложение
 [Flask-Login](https://flask-login.readthedocs.io/en/latest/)  
 [Flask-Bootstrap](https://getbootstrap.com/docs/3.3/getting-started/)  
 [Flask-Dance](https://flask-dance.readthedocs.io/en/latest/#)  
+[Flask-Gunicorn](https://flask.palletsprojects.com/en/stable/deploying/gunicorn/)  
 [Pillow](https://pillow.readthedocs.io/en/stable/)  
 [ItsDangerous](https://itsdangerous.palletsprojects.com/en/stable/)  
 

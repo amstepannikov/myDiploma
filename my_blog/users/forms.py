@@ -83,7 +83,7 @@ class UpdateAccountForm(FlaskForm):
 
 class RequestResetForm(FlaskForm):
     """
-    Форма для запроса восстановления пароля, через почту
+    Форма для отправки запроса восстановления пароля, через почту
     """
     email = StringField('Укажите Email вашего аккаунта', validators=[DataRequired(), Email()])
     submit = SubmitField('Отправить письмо для изменения пароля')

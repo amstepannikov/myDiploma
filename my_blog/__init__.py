@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
 from flask_dance.contrib.google import make_google_blueprint, google
+from itsdangerous import URLSafeTimedSerializer
 
 from my_blog.configs import Config
 
@@ -14,6 +15,9 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 bcrypt = Bcrypt()
 mail = Mail()
+
+# Создаем объект сериализатора с секретным ключом
+serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
 
 # создаем макет для регистрации в google
 google_blueprint = make_google_blueprint(
@@ -33,10 +37,12 @@ def create_app():
     from my_blog.main.routes import main
     from my_blog.users.routes import users
     from my_blog.posts.routes import posts
+    from my_blog.errors.handlers import errors
     app.register_blueprint(main)
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(google_blueprint, url_prefix='/login')
+    app.register_blueprint(errors)
 
     # добавляем расширения
     db.init_app(app)
