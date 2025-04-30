@@ -90,5 +90,3 @@ def delete_post(post_id):
     db.session.commit()
     flash('Ваш пост был удален!', 'success')
     return redirect(url_for('posts.all_posts'))
-
-

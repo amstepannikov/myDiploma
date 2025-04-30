@@ -1,4 +1,4 @@
-from my_blog import create_app
+from my_blog.admin import app
 # import locale
 import os
 
@@ -20,7 +20,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
 # locale.setlocale(locale.LC_TIME, 'ru_RU')
-app = create_app()
+# app = create_app()
 
 
 if __name__ == '__main__':
