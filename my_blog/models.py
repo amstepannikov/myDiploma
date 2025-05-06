@@ -1,8 +1,15 @@
 from datetime import datetime
 
 from flask_login import UserMixin
+from flask_security import RoleMixin
 
 from my_blog import db, login_manager, serializer
+
+
+# Таблица для хранения ролей пользователей
+roles_users = db.Table('roles_users',
+                       db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+                       db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 
 class User(db.Model, UserMixin):
@@ -15,6 +22,7 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.png')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)  # связь с таблицей постов
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
     def __repr__(self):
         return f"Пользователь('{self.username}, {self.email}', '{self.image_file}')"
@@ -45,6 +53,24 @@ class User(db.Model, UserMixin):
         except Exception as e:
              return None
         return user
+
+
+class Role(db.Model, RoleMixin):
+    """
+    Таблица ролей пользователей
+    """
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
+    def __str__(self):
+        return self.name
+
+    def __hash__(self):
+        return hash(self.name)
+
+
+
 
 
 class Post(db.Model):

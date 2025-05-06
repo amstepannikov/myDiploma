@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
+from flask_migrate import Migrate
 from flask_dance.contrib.google import make_google_blueprint, google
 from itsdangerous import URLSafeTimedSerializer
 
@@ -15,6 +16,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 bcrypt = Bcrypt()
 mail = Mail()
+migrate = Migrate()
 
 # Создаем объект сериализатора с секретным ключом
 serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
@@ -49,5 +51,6 @@ def create_app():
     login_manager.init_app(app)
     bcrypt.init_app(app)
     mail.init_app(app)
+    migrate.init_app(app, db)
 
     return app

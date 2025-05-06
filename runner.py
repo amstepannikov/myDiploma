@@ -19,6 +19,8 @@ import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
+
+
 # locale.setlocale(locale.LC_TIME, 'ru_RU')
 # app = create_app()
 

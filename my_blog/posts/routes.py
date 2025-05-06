@@ -64,14 +64,12 @@ def update_post(post_id):
         abort(403)
     form = PostForm()
     if form.validate_on_submit():
-        post.title = form.title.data
-        post.content = form.content.data
+        form.populate_obj(post) # заполняет поля формы данными из объекта post
         db.session.commit()
         flash('Ваш пост изменён!', 'success')
         return redirect(url_for('posts.post', post_id=post.id))
     elif request.method == 'GET':
-        form.title.data = post.title
-        form.content.data = post.content
+        form = PostForm(obj=post) # заполняет поля формы данными из объекта post
     return render_template('create_post.html', title='Изменение поста', form=form, legend='Изменение поста')
 
 
