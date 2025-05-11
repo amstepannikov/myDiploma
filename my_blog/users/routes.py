@@ -80,7 +80,7 @@ def account():
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
+            current_user.avatar = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
         # Сохраняем изменения в базе данных
@@ -97,11 +97,11 @@ def account():
         posts = Post.query.filter_by(author=user) \
             .order_by(Post.date_posted.desc()) \
             .paginate(page=page, per_page=5)
-        image_file = url_for('static', filename='avatars/' + current_user.image_file)
+        avatar = url_for('static', filename='avatars/' + current_user.avatar)
         return render_template('account.html', title='Аккаунт',
-                           image_file=image_file, form=form, posts=posts, user=user)
-    image_file = url_for('static', filename='avatars/' + current_user.image_file)
-    return render_template('account.html', title='Аккаунт', image_file=image_file, form=form)
+                           avatar=avatar, form=form, posts=posts, user=user)
+    avatar = url_for('static', filename='avatars/' + current_user.avatar)
+    return render_template('account.html', title='Аккаунт', avatar=avatar, form=form)
 
 
 @users.route("/logout")

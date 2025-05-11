@@ -1,15 +1,8 @@
 from datetime import datetime
 
 from flask_login import UserMixin
-from flask_security import RoleMixin
 
 from my_blog import db, login_manager, serializer
-
-
-# Таблица для хранения ролей пользователей
-roles_users = db.Table('roles_users',
-                       db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-                       db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 
 class User(db.Model, UserMixin):
@@ -19,13 +12,14 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(20), nullable=False, default='default.png')
+    avatar = db.Column(db.String(20), nullable=False, default='default.png')
     password = db.Column(db.String(60), nullable=False)
+    is_active = db.Column(db.Integer(), default=1)
     posts = db.relationship('Post', backref='author', lazy=True)  # связь с таблицей постов
-    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    roles = db.relationship('Role', secondary='roles_users', backref=db.backref('users', lazy='dynamic'))
 
     def __repr__(self):
-        return f"Пользователь('{self.username}, {self.email}', '{self.image_file}')"
+        return f"Пользователь('{self.username}, {self.email}', '{self.avatar}')"
 
     def get_reset_token(self):
         """
@@ -50,12 +44,12 @@ class User(db.Model, UserMixin):
             decoded_data = serializer.loads(token, max_age=max_age, salt="email-confirm")
             user_id = decoded_data['user_id']
             user = User.query.get(user_id)
-        except Exception as e:
+        except Exception:
              return None
         return user
 
 
-class Role(db.Model, RoleMixin):
+class Role(db.Model):
     """
     Таблица ролей пользователей
     """
@@ -70,7 +64,14 @@ class Role(db.Model, RoleMixin):
         return hash(self.name)
 
 
-
+class RolesUsers(db.Model):
+    """
+    Таблица для связки пользователей и ролей
+    """
+    __tablename__ = 'roles_users'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column('user_id', db.Integer(), db.ForeignKey('user.id'))
+    role_id = db.Column('role_id', db.Integer(), db.ForeignKey('role.id'))
 
 
 class Post(db.Model):

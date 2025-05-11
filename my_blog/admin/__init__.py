@@ -8,6 +8,7 @@ from my_blog import create_app
 
 app = create_app()
 
+# Создание админки
 admin = Admin(app)
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Post, db.session))
