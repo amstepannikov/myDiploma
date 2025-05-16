@@ -8,6 +8,7 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_dance.contrib.google import make_google_blueprint, google
 from itsdangerous import URLSafeTimedSerializer
+from flask_security import datastore
 
 from my_blog.configs import Config
 

@@ -1,5 +1,6 @@
 from subprocess import call
 from shutil import rmtree
+from flask_security import datastore
 import os
 
 # удаляем папку с миграциями, если она есть
@@ -12,12 +13,12 @@ os.environ['FLASK_APP'] = 'runner.py'
 
 # создаём папку с миграциями
 command = "flask db init"
-res = call(command, shell=True)
+call(command, shell=True)
 
 # создаём миграцию
 command = "flask db migrate"
-res = call(command, shell=True)
+call(command, shell=True)
 
 # выполняем миграцию
 command = "flask db upgrade"
-res = call(command, shell=True)
+call(command, shell=True)

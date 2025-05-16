@@ -10,7 +10,7 @@ posts = Blueprint('posts', __name__)
 
 
 @posts.route("/all_posts")
-@login_required
+# @login_required
 def all_posts():
     """
     Все посты пользователя
@@ -22,7 +22,7 @@ def all_posts():
 
 
 @posts.route("/post/new", methods=['GET', 'POST'])
-@login_required
+# @login_required
 def new_post():
     """
     Форма создания поста
@@ -52,7 +52,7 @@ def post(post_id):
 
 
 @posts.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
-@login_required
+# @login_required
 def update_post(post_id):
     """
     Изменение поста
@@ -74,7 +74,7 @@ def update_post(post_id):
 
 
 @posts.route("/post/<int:post_id>/delete", methods=['POST'])
-@login_required
+# @login_required
 def delete_post(post_id):
     """
     Удаление поста

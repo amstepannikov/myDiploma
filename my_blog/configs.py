@@ -24,6 +24,10 @@ class Config:
     # Используется для подписи cookies, при его изменении пользователям потребуется логиниться заново
     SECRET_KEY = 'c018c942bbf625466a3ea0369918eac1f254fecc48452f56da2f1cf839c9e749'
 
+    # Flask-Security
+    SECURITY_PASSWORD_SALT = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6'
+    SECURITY_PASSWORD_HASH = 'bcrypt'
+
     # Путь к файлу базы данных
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data/app.db')
 

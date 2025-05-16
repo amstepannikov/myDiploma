@@ -2,14 +2,11 @@ from datetime import datetime
 
 from flask_login import UserMixin
 from flask_security import RoleMixin
+from flask_security import AsaList
+
+from sqlalchemy.ext.mutable import MutableList
 
 from my_blog import db, login_manager, serializer
-
-
-# Таблица для хранения ролей пользователей
-roles_users = db.Table('roles_users',
-                       db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-                       db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 
 class User(db.Model, UserMixin):
@@ -19,15 +16,16 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(20), nullable=False, default='default.png')
+    avatar = db.Column(db.String(20), nullable=False, default='default.png')
     password = db.Column(db.String(60), nullable=False)
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
+    fs_uniquifier = db.Column(db.String(255), unique=True)
     posts = db.relationship('Post', backref='author', lazy=True)  # связь с таблицей постов
-    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    roles = db.relationship('Role', secondary='roles_users', backref=db.backref('users', lazy='dynamic'))
 
     def __repr__(self):
-        return f"Пользователь('{self.username}, {self.email}', '{self.image_file}')"
+        return f"Пользователь('{self.username}, {self.email}', '{self.avatar}')"
 
     def get_reset_token(self):
         """
@@ -64,6 +62,8 @@ class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
+    level = db.Column(db.Integer())
+    permissions = db.Column(MutableList.as_mutable(AsaList()), nullable=True)
 
     def __str__(self):
         return self.name
@@ -72,7 +72,14 @@ class Role(db.Model, RoleMixin):
         return hash(self.name)
 
 
-
+class RolesUsers(db.Model):
+    """
+    Таблица для связки пользователей и ролей
+    """
+    __tablename__ = 'roles_users'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column('user_id', db.Integer(), db.ForeignKey('user.id'))
+    role_id = db.Column('role_id', db.Integer(), db.ForeignKey('role.id'))
 
 
 class Post(db.Model):
