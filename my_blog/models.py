@@ -6,15 +6,15 @@ from my_blog import db, login_manager, serializer
 
 
 class User(db.Model, UserMixin):
-    """
-    Таблица пользователей
-    """
+    """Таблица пользователей"""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     avatar = db.Column(db.String(20), nullable=False, default='default.png')
-    password = db.Column(db.String(60), nullable=False)
-    is_active = db.Column(db.Integer(), default=1)
+    password = db.Column(db.String(60), nullable=True)
+    is_active = db.Column(db.Integer(), nullable=False, default=1)
+    date_change_password = db.Column(db.DateTime(), nullable=True, default=datetime.now)
+    auth_type = db.Column(db.String(20), nullable=False, default='my_blog') # тип авторизации (my_blog, google, github)
     posts = db.relationship('Post', backref='author', lazy=True)  # связь с таблицей постов
     roles = db.relationship('Role', secondary='roles_users', backref=db.backref('users', lazy='dynamic'))
 
@@ -50,9 +50,7 @@ class User(db.Model, UserMixin):
 
 
 class Role(db.Model):
-    """
-    Таблица ролей пользователей
-    """
+    """Таблица ролей пользователей"""
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
@@ -65,9 +63,7 @@ class Role(db.Model):
 
 
 class RolesUsers(db.Model):
-    """
-    Таблица для связки пользователей и ролей
-    """
+    """Таблица для связки пользователей и ролей"""
     __tablename__ = 'roles_users'
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column('user_id', db.Integer(), db.ForeignKey('user.id'))
@@ -75,9 +71,7 @@ class RolesUsers(db.Model):
 
 
 class Post(db.Model):
-    """
-    Таблица постов
-    """
+    """Таблица постов"""
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.now)

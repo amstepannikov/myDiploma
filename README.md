@@ -24,7 +24,6 @@ WSGI-приложение
        * войти через VK (под вопросом) - 0%
        * ввод email - 100%
        * ввод пароля - 100%
-       * переход в регистрацию - 100%
        * переход в Сброс пароля, через почту - 100%        
      * регистрация - 40%
        * регистрация через google (80% что будет) - 20%
@@ -173,10 +172,11 @@ WSGI-приложение
 id - INTEGER, PK, NOT NULL - идентификатор пользователя  
 username - VARCHAR(20) NOT NULL - имя  
 email - VARCHAR(100), NOT NULL - почта, он же логин  
+avatar - VARCHAR(20), NOT NULL - имя-номер файла аватарки, по умолчанию my_blog/static/avatars/default.png
 password - VARCHAR(60) - хеш пароля, может быть пустым, если авторизация через внешние ресурсы (если реализую эту авторизацию)  
-first_name - VARCHAR(60) - ну пусть будет  
-last_name - VARCHAR(60)  
-avatar - VARCHAR(20) - имя-номер файла аватарки, если пусто то my_blog/static/avatars/default.png 
+is_active - INTEGER, NOT NULL - 1-активный аккаунт, 0-заблокирован (в SQLite нет типа Boolean)
+date_change_password - DATETIME - время создания/смены пароля
+auth_type - VARCHAR(20), NOT NULL - тип авторизации (my_blog, google, github)
 
 ### posts - таблица постов
 id - INTEGER, PK, NOT NULL - идентификатор поста  

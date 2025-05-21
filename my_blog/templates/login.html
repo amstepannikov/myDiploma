@@ -2,13 +2,15 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <div class="content-section" style="box-shadow: 10px 15px 10px #4a4e69;">
+
+    <div class="content-section" style="box-shadow: 10px 15px 20px #4a4e69;">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Авторизация</legend>
+
+                <!-- Поле email -->
                 <div class="form-group">
-                    <!-- Поле email -->
                     {{ form.email.label(class="form-control-label") }}
                     {% if form.email.errors %}
                         {{ form.email(class="form-control form-control-lg is-invalid") }}
@@ -21,6 +23,8 @@
                         {{ form.email(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+
+                <!-- Поле пароль -->
                 <div class="form-group">
                     {{ form.password.label(class="form-control-label") }}
                     {% if form.password.errors %}
@@ -35,15 +39,15 @@
                     {% endif %}
                 </div>
             </fieldset>
+
+            <!-- Кнопка Войти -->
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
                 <small class="text-muted ml-2">
-                    <a href="{{ url_for('users.reset_request') }}">Забыли пароль?</a>
+                    <a href="{{ url_for('users.reset_request') }}">Сбросить пароль</a>
                 </small>
             </div>
-            <small style="font-size: 15px; font-weight: 500;">
-                Нужен аккаунт? <a class="ml-2" href="{{ url_for('users.register') }}">Зарегистрируйтесь</a>
-            </small>
         </form>
     </div>
+
 {% endblock content %}

@@ -1,9 +1,11 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint
+from datetime import datetime, timedelta
+
+from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_dance.contrib.google import make_google_blueprint, google
 
 from my_blog import db, bcrypt, google_blueprint
-from my_blog.models import User, Post
+from my_blog.models import User, Post, Role
 from my_blog.configs import Config
 from my_blog.users.utils import save_picture, send_reset_email
 from my_blog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
@@ -16,7 +18,7 @@ users = Blueprint('users', __name__)
 @users.route("/register", methods=['GET', 'POST'])
 def register():
     """
-    Проверка пользователя в системе
+    Регистрация пользователя в системе
     :return: render_template - возвращает шаблон страницы register.html
     """
     # Если пользователь уже залогинен, то мы не можем войти в систему
@@ -26,9 +28,14 @@ def register():
     if form.validate_on_submit():
         # Хеширование пароля
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+
+        # Добавляем пользователя и его роль в базу данных
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        role = Role.query.filter_by(name='member').first()
+        user.roles.append(role)
         db.session.add(user)
         db.session.commit()
+
         flash('Ваша учетная запись была создана!'
               ' Теперь вы можете войти в систему', 'success')
         return redirect(url_for('users.login'))
@@ -38,7 +45,7 @@ def register():
 @users.route("/login", methods=['GET', 'POST'])
 def login():
     """
-    Проверка пользователя в системе
+    Вход пользователя в систему
     :return: render_template - возвращает шаблон страницы login.html
     """
     # Если пользователь уже залогинен, то мы сразу переходим к постам
@@ -58,10 +65,16 @@ def login():
     # Если пользователь уже есть, то мы не можем зарегистрировать пользователя с таким же адресом электронной почты
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        # Если пользователь существует и пароль верный, то авторизуем пользователя
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        # Если пользователь существует и пароль верный, то ...
+        user_true = user and bcrypt.check_password_hash(user.password, form.password.data)
+        if user_true and not user.is_active:
+            flash('Аккаунт заблокирован!', 'внимание')
+        elif user_true and datetime.now() + timedelta(days=Config.PASSWORD_TIME) > user.date_change_password:
+            flash('Срок действия пароля истек! Смените пароль, нажав на Сброс пароля', 'внимание')
+        elif user_true:
             login_user(user, remember=True)
             next_page = request.args.get('next')
+
             return redirect(next_page) if next_page else redirect(url_for('posts.all_posts'))
         else:
             flash('Войти не удалось. Пожалуйста, '

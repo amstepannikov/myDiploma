@@ -51,6 +51,9 @@ class Config:
     RECAPTCHA_PRIVATE_KEY = '6LeYIbsSAAAAAJezaIq3Ft_hSTo0YtyeFG-JgRtu'
     RECAPTCHA_OPTIONS = {'theme': 'white'}
 
+    # Сколько дней действует пароль пользователя
+    PASSWORD_TIME = 30
+
 
 class ProductionConfig(Config):
     DEBUG = False
