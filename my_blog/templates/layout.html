@@ -80,6 +80,7 @@
                  <div class="collapse navbar-collapse" id="navbarToggle" style="justify-content: flex-end;">
                     <!-- Navbar Right Side -->
                     {% if current_user.is_authenticated %}
+                      <a class="nav-link nav-item navigation-links" href="{{ url_for('admin.index') }}"><i class="fa fa-rocket"></i> Админка</a>
                       <a class="nav-link nav-item navigation-links" href="{{ url_for('users.logout') }}"><i class="fa fa-sign-out"></i> Выйти</a>
                     {% endif %}
                     <a class="nav-link nav-item navigation-links" href="/"><i class="fa fa-university"></i> О программе</a>

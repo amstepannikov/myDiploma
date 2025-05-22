@@ -69,7 +69,7 @@ def login():
         user_true = user and bcrypt.check_password_hash(user.password, form.password.data)
         if user_true and not user.is_active:
             flash('Аккаунт заблокирован!', 'внимание')
-        elif user_true and datetime.now() + timedelta(days=Config.PASSWORD_TIME) > user.date_change_password:
+        elif user_true and user.date_change_password + timedelta(days=Config.PASSWORD_TIME) < datetime.now():
             flash('Срок действия пароля истек! Смените пароль, нажав на Сброс пароля', 'внимание')
         elif user_true:
             login_user(user, remember=True)

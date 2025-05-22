@@ -173,12 +173,22 @@ id - INTEGER, PK, NOT NULL - идентификатор пользователя
 username - VARCHAR(20) NOT NULL - имя  
 email - VARCHAR(100), NOT NULL - почта, он же логин  
 avatar - VARCHAR(20), NOT NULL - имя-номер файла аватарки, по умолчанию my_blog/static/avatars/default.png
-password - VARCHAR(60) - хеш пароля, может быть пустым, если авторизация через внешние ресурсы (если реализую эту авторизацию)  
-is_active - INTEGER, NOT NULL - 1-активный аккаунт, 0-заблокирован (в SQLite нет типа Boolean)
-date_change_password - DATETIME - время создания/смены пароля
+password - VARCHAR(60) - хеш пароля, может быть пустым, если авторизация через внешние ресурсы   
+is_active - INTEGER, NOT NULL - 1-активный аккаунт, 0-заблокирован (в SQLite нет типа Boolean)  
+date_change_password - DATETIME - время создания/смены пароля  
 auth_type - VARCHAR(20), NOT NULL - тип авторизации (my_blog, google, github)
 
-### posts - таблица постов
+#### role - таблица доступов пользователей
+id - INTEGER, PK, NOT NULL - идентификатор роли  
+name - VARCHAR(80), NOT NULL - наименование (member, admin, super)  
+description - VARCHAR(255), NOT NULL - описание роли
+
+#### roles_users - таблица для связки пользователей и ролей
+id - INTEGER, PK, NOT NULL - идентификатор   
+user_id - INTEGER, FK, NOT NULL - идентификатор пользователя   
+role_id - INTEGER, FK, NOT NULL - идентификатор роли
+
+#### posts - таблица постов
 id - INTEGER, PK, NOT NULL - идентификатор поста  
 title - VARCHAR(100), NOT NULL - заголовок  
 date_posted - DATETIME, NOT NULL - время создания  

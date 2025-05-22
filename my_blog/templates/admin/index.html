@@ -1,0 +1,11 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div>
+    {% if current_user.is_authenticated %}
+    <h1>Flask-Admin example</h1>
+    {% else %}
+    <h1>Тебя сюды не звали уйди</h1>
+    {% endif %}
+</div>
+{% endblock %}

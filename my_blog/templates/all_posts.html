@@ -2,14 +2,6 @@
 
 {% block head %}
   <style>
-    .card{
-      border-radius: 25px;
-      /* border-top-right-radius: 25px;
-      border-bottom-left-radius: 25px; */
-      background-color:  white;
-      box-shadow: 10px 15px 10px #4a4e69;
-      width: 92%;
-    }
 
     .card-title{
       margin-bottom: 0 !important;
@@ -28,12 +20,6 @@
     p{
       color: rgb(43, 37, 37);
     }
-
-    /* i{
-      padding: 0px 7px;
-      cursor: pointer;
-    } */
-
   </style>
 {% endblock head %}
 
@@ -48,7 +34,7 @@
     <div class="card" style="margin-bottom: 20px;">
       <div class="card-body">
         <h4 class="card-title"><a class="title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h4>
-        <small>Опубликовано: {{ post.date_posted.strftime('%A, %d %B %Y %I:%M %p') }}</small>
+        <small>Опубликовано: {{ post.date_posted.strftime('%d-%m-%Y в %H:%M') }}</small>
         <br>
         <br>
         <p class="card-text">{{ post.content }}</p>
