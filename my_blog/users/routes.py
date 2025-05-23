@@ -82,6 +82,30 @@ def login():
     return render_template('login.html', title='Аутентификация', form=form)
 
 
+@users.route('/login_guest')
+def login_guest():
+    """Авторизация пользователя по умолчанию"""
+    user = User.query.filter_by(email='guest@mail.ru').first()
+    login_user(user, remember=True)
+    return redirect(url_for('posts.all_posts'))
+
+
+@users.route('/login_google')
+def login_google():
+    """Авторизация пользователя через Google"""
+    user = User.query.filter_by(email='guest@mail.ru').first()
+    login_user(user, remember=True)
+    return redirect(url_for('posts.all_posts'))
+
+
+@users.route('/login_github')
+def login_github():
+    """Авторизация пользователя через Github"""
+    user = User.query.filter_by(email='guest@mail.ru').first()
+    login_user(user, remember=True)
+    return redirect(url_for('posts.all_posts'))
+
+
 @users.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():

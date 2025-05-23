@@ -21,6 +21,17 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"Пользователь('{self.username}, {self.email}', '{self.avatar}')"
 
+    def is_role(self, role):
+        """
+        Проверяет, является ли пользователь ролью
+        :param role: роль, которую нужно проверить
+        :return: True или False
+        """
+        for i in self.roles:
+            if i.name == role:
+                return True
+        return False
+
     def get_reset_token(self):
         """
         Генерирует токен для сброса пароля

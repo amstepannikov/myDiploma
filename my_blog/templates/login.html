@@ -3,7 +3,7 @@
 
 {% block content %}
 
-    <div class="content-section"">
+    <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
@@ -38,15 +38,18 @@
                         {{ form.password(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+
+                <div style="margin-top: 40px;">
+                    {{ form.submit(class="btn btn-outline-info btn-md btn-block") }}
+                    <small class="text-muted ml-2">
+                        <a href="{{ url_for('users.reset_request') }}">Сбросить пароль</a>
+                    </small>
+                    <a class="btn btn-secondary btn-md btn-block" href="{{ url_for('users.login_guest') }}" style="margin-top: 30px;">Войти как Гость</a>
+                    <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.login_google') }}"><i class="fa fa-google"></i> Через Google</a>
+                    <a class="btn btn-dark btn-md btn-block" href="{{ url_for('users.login_github') }}"><i class="fa fa-github"></i> Через GitHub</a>
+                </div>
             </fieldset>
 
-            <!-- Кнопка Войти -->
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
-                <small class="text-muted ml-2">
-                    <a href="{{ url_for('users.reset_request') }}">Сбросить пароль</a>
-                </small>
-            </div>
         </form>
     </div>
 
