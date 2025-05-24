@@ -52,14 +52,6 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('posts.all_posts'))
 
-    # регистрация через google
-    # if not google.authorized:
-    #     return f'<a href="{url_for("google.login")}">Sign in with Google</a>'
-    # resp = google.get('/oauth2/v2/userinfo')  # Получаем профиль пользователя
-    # assert resp.ok, resp.text
-    # email = resp.json()['email']
-    # print(resp)
-
     form = LoginForm()
 
     # Если пользователь уже есть, то мы не можем зарегистрировать пользователя с таким же адресом электронной почты
@@ -93,6 +85,15 @@ def login_guest():
 @users.route('/login_google')
 def login_google():
     """Авторизация пользователя через Google"""
+
+    # регистрация через google
+    # if not google.authorized:
+    #     return f'<a href="{url_for("google.login")}">Sign in with Google</a>'
+    # resp = google.get('/oauth2/v2/userinfo')  # Получаем профиль пользователя
+    # assert resp.ok, resp.text
+    # email = resp.json()['email']
+    # print(resp)
+
     user = User.query.filter_by(email='guest@mail.ru').first()
     login_user(user, remember=True)
     return redirect(url_for('posts.all_posts'))
