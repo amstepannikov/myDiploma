@@ -1,67 +1,148 @@
+<!--Страница регистрации пользователя-->
 {% extends "layout.html" %}
+
+{% block head %}
+    <style>
+        .pad {
+            padding-left: 5px
+        }
+    </style>
+
+    <!-- Подключаем jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock head %}
+
 {% block content %}
-    <div class="content-section">
+    <div class="content-section col-6">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Регистрация</legend>
+
+                <!--Имя пользователя-->
                 <div class="form-group">
                     {{ form.username.label(class="form-control-label") }}
 
                     {% if form.username.errors %}
-                        {{ form.username(class="form-control form-control-lg is-invalid") }}
+                        {{ form.username(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.username.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.username(class="form-control form-control-lg") }}
+                        {{ form.username(class="form-control") }}
                     {% endif %}
                 </div>
+
+                <!--Email он же логин-->
                 <div class="form-group">
                     {{ form.email.label(class="form-control-label") }}
                     {% if form.email.errors %}
-                        {{ form.email(class="form-control form-control-lg is-invalid") }}
+                        {{ form.email(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.email.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.email(class="form-control form-control-lg") }}
+                        {{ form.email(class="form-control") }}
                     {% endif %}
                 </div>
+
+                <!--Пароль-->
+
                 <div class="form-group">
                     {{ form.password.label(class="form-control-label") }}
-                    {% if form.password.errors %}
-                        {{ form.password(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.password.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
+                    <div class="row">
+                        <div class="col-sm-10" style="padding-right:0">
+                            {% if form.password.errors %}
+                                {{ form.password(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.password(class="form-control", placeholder="Введите пароль") }}
+                            {% endif %}
                         </div>
-                    {% else %}
-                        {{ form.password(class="form-control form-control-lg") }}
-                    {% endif %}
+                        <div class="col-auto pad">
+                            <i class="bi bi-eye-slash position-absolute translate-middle-y ms-2" id="togglePassword"></i>
+                         </div>
+                        <div class="col-auto pad">
+                            <i class="bi bi-eye-slash position-absolute translate-middle-y ms-2" id="togglePassword1"></i>
+                        </div>
+                        <div class="col-auto pad">
+                            <i class="bi bi-eye-slash position-absolute translate-middle-y ms-2" id="togglePassword2"></i>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Скрипт для переключения видимости пароля -->
+                <script>
+                    document.getElementById('togglePassword').addEventListener('click', function () {
+                        var passwordInput = document.querySelector('[name="password"]');
+                        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+                        this.classList.toggle('bi-eye');
+                        this.classList.toggle('bi-eye-slash');
+                    });
+                </script>
+
+                <!--Подтвердить пароль-->
                 <div class="form-group">
                     {{ form.confirm_password.label(class="form-control-label") }}
                     {% if form.confirm_password.errors %}
-                        {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
+                        {{ form.confirm_password(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.confirm_password.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.confirm_password(class="form-control form-control-lg") }}
+                        {{ form.confirm_password(class="form-control", placeholder="Повторите пароль") }}
                     {% endif %}
                 </div>
+
+
+                <input type="text" id="my_input_field" placeholder="Начните вводить..."/>
+                <div id="response_area">Ожидаем ввод...</div>
+
+                <script>
+                    jQuery.noConflict();
+                    jQuery(document).ready(function ($) {
+    $('#my_input_field').on('input', function() {
+        var user_input = $(this).val();
+
+        $.ajax({
+            url: '/process_input',
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({ text: user_input }),
+            success: function(response) {
+                $('#response_area').text(response.message);
+            },
+            error: function(error) {
+                console.error("Ошибка:", error.responseText);
+            }
+        });
+    });
+});
+                </script>
             </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+
+            <div>
+                <!--Кнопка Зарегистрироваться-->
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info btn-md btn-block") }}
+                </div>
+
+                <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.login_google') }}"
+                   style="margin-top: 20px;"><i class="fa fa-google"></i> Через Google</a>
+                <a class="btn btn-dark btn-md btn-block" href="{{ url_for('users.login_github') }}"><i class="fa fa-github"></i> Через GitHub</a>
             </div>
         </form>
     </div>
+
 {% endblock content %}

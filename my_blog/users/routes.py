@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app
+from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_dance.contrib.google import make_google_blueprint, google
 
@@ -40,6 +40,24 @@ def register():
               ' Теперь вы можете войти в систему', 'success')
         return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
+
+
+
+# Маршрут обработки символов от формы
+@users.route('/process_input', methods=['POST'])
+def process_input():
+    # Получаем введённые пользователем данные
+    data = request.get_json()
+
+    if not data or 'text' not in data:
+        return jsonify({'message': 'Нет данных'}), 400
+
+    # Простое эхо-сообщение — можно заменить любой другой обработкой
+    response_message = f"Введено {len(data['text'])} символов."
+    print(111)
+
+    return jsonify({'message': response_message})
+
 
 
 @users.route("/login", methods=['GET', 'POST'])
