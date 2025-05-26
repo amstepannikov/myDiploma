@@ -1,6 +1,10 @@
+<!-- Создание поста -->
+
 {% extends "layout.html" %}
+
 {% block content %}
-<div class="content-section">
+
+<div class="content-section  col-12">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
@@ -37,4 +41,5 @@
         </div>
     </form>
 </div>
+
 {% endblock content %}

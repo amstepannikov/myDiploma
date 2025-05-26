@@ -7,7 +7,7 @@ from flask_dance.contrib.google import make_google_blueprint, google
 from my_blog import db, bcrypt, google_blueprint
 from my_blog.models import User, Post, Role
 from my_blog.configs import Config
-from my_blog.users.utils import save_picture, send_reset_email
+from my_blog.users.utils import save_picture, send_reset_email, evaluate_password_strength, complex_password_generator
 from my_blog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                  RequestResetForm, ResetPasswordForm)
 
@@ -42,22 +42,17 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-
-# Маршрут обработки символов от формы
-@users.route('/process_input', methods=['POST'])
-def process_input():
-    # Получаем введённые пользователем данные
+@users.route('/complexity_password', methods=['POST'])
+def complexity_password():
     data = request.get_json()
+    complexity = f"({evaluate_password_strength(data['text'])})"
+    return jsonify({'complexity': complexity}), 200
 
-    if not data or 'text' not in data:
-        return jsonify({'message': 'Нет данных'}), 400
 
-    # Простое эхо-сообщение — можно заменить любой другой обработкой
-    response_message = f"Введено {len(data['text'])} символов."
-    print(111)
-
-    return jsonify({'message': response_message})
-
+@users.route('/generate_password')
+def generate_password():
+    """Генерация сложного пароля"""
+    return jsonify({'password': complex_password_generator()})
 
 
 @users.route("/login", methods=['GET', 'POST'])

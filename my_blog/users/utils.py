@@ -43,7 +43,7 @@ def send_reset_email(user) -> None:
     mail.send(msg)
 
 
-def generate_password(length=12) -> str:
+def complex_password_generator(length=12) -> str:
     """
     Генератор паролей
     :param length: Длинна пароля
@@ -61,7 +61,7 @@ def generate_password(length=12) -> str:
                 return password
 
 
-def evaluate_password_strength(password) -> int:
+def evaluate_password_strength(password) -> str:
     """
     Оценка сложностей паролей
     :param password: пароль
@@ -110,4 +110,16 @@ def evaluate_password_strength(password) -> int:
     if len(password) < 8:
         score //= 2
 
-    return min(score, 100)
+    text_score = 'Пароль слишком короткий'
+    if 1 < score < 20:
+        text_score = 'Очень слабый пароль'
+    elif score < 40:
+        text_score = 'Слабый пароль'
+    elif score < 60:
+        text_score = 'Средний пароль'
+    elif score < 80:
+        text_score = 'Сильный пароль'
+    elif score >= 80:
+        text_score = 'Очень сильный пароль'
+
+    return text_score + f', сложность: {score}'
