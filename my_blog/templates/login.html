@@ -9,37 +9,53 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Авторизация</legend>
 
-                <!-- Поле email -->
+                <!-- Email он же логин -->
                 <div class="form-group">
                     {{ form.email.label(class="form-control-label") }}
                     {% if form.email.errors %}
-                        {{ form.email(class="form-control form-control-lg is-invalid") }}
+                        {{ form.email(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.email.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.email(class="form-control form-control-lg") }}
+                        {{ form.email(class="form-control") }}
                     {% endif %}
                 </div>
 
-                <!-- Поле пароль -->
+                <!--Пароль-->
                 <div class="form-group">
                     {{ form.password.label(class="form-control-label") }}
-                    {% if form.password.errors %}
-                        {{ form.password(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.password.errors %}
+                    <div class="input-group  mb-3">
+                        {% if form.password.errors %}
+                            {{ form.password(class="form-control is-invalid") }}
+                         {% else %}
+                            {{ form.password(class="form-control", placeholder="Введите пароль") }}
+                        {% endif %}
+                        <button type="button" class="btn btn-light bi-eye-slash" id="togglePassword"></button>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
                                 <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.password(class="form-control form-control-lg") }}
-                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
 
+                <!-- Скрипт для переключения видимости пароля -->
+                <script>
+                    document.getElementById('togglePassword').addEventListener('click', function () {
+                        var passwordInput = document.querySelector('[name="password"]');
+                        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+                        this.classList.toggle('bi-eye');
+                        this.classList.toggle('bi-eye-slash');
+                    });
+                </script>
+
                 <div style="margin-top: 40px;">
+                    <!--Кнопка Зарегистрироваться-->
                     {{ form.submit(class="btn btn-outline-info btn-md btn-block") }}
                     <small class="text-muted ml-2">
                         <a href="{{ url_for('users.reset_request') }}">Сбросить пароль</a>

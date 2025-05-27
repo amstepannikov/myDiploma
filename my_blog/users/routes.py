@@ -53,6 +53,7 @@ def complexity_password():
 @users.route('/generate_password')
 def generate_password():
     """Генерация сложного пароля"""
+    print(123123)
     return jsonify({'password': complex_password_generator()})
 
 
@@ -167,7 +168,7 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('posts.all_posts'))
         else:
             flash('Войти не удалось. Пожалуйста, '
-                  'проверьте электронную почту и пароль', 'внимание')
+                  'проверьте электронную почту и пароль', 'error')
     return render_template('login.html', title='Аутентификация', form=form)
 
 

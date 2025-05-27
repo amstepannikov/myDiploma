@@ -1,7 +1,9 @@
 <!--Страница с указанием Email для сброса пароля через почту-->
 {% extends "layout.html" %}
+
 {% block content %}
-    <div class="content-section">
+
+    <div class="content-section col-6">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
@@ -9,7 +11,7 @@
                 <div class="form-group">
                     {{ form.email.label(class="form-control-label") }}
                     {% if form.email.errors %}
-                        {{ form.email(class="form-control form-control-lg is-invalid") }}
+                        {{ form.email(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
 <!--                        Показываю только первую ошибку-->
                             <span>{{ form.email.errors[0] }}</span>
@@ -18,7 +20,7 @@
 <!--                            {% endfor %}-->
                         </div>
                     {% else %}
-                        {{ form.email(class="form-control form-control-lg") }}
+                        {{ form.email(class="form-control") }}
                     {% endif %}
                 </div>
             </fieldset>
@@ -27,4 +29,5 @@
             </div>
         </form>
     </div>
+
 {% endblock content %}
