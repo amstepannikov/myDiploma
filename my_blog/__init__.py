@@ -6,7 +6,8 @@ from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
 from flask_migrate import Migrate
-from flask_dance.contrib.google import make_google_blueprint, google
+from flask_dance.contrib.google import make_google_blueprint
+from flask_dance.contrib.github import make_github_blueprint
 from itsdangerous import URLSafeTimedSerializer
 
 from my_blog.configs import Config
@@ -28,6 +29,12 @@ google_blueprint = make_google_blueprint(
     scope=['profile', 'email']
 )
 
+# создаем макет для регистрации в github
+github_blueprint = make_github_blueprint(
+    client_id=Config.GITHUB_OAUTH_CLIENT_ID,
+    client_secret=Config.GITHUB_OAUTH_CLIENT_SECRET,
+    scope=['user:email']
+)
 
 def create_app():
     app = Flask(__name__)
@@ -44,6 +51,7 @@ def create_app():
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(google_blueprint, url_prefix='/login')
+    app.register_blueprint(github_blueprint, url_prefix='/login')
     app.register_blueprint(errors)
 
     # добавляем расширения

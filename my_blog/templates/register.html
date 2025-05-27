@@ -111,8 +111,6 @@
                     });
                 </script>
 
-
-
                 <!--Подтвердить пароль-->
                 <div class="form-group">
                     {{ form.confirm_password.label(class="form-control-label") }}
@@ -136,9 +134,9 @@
                     {{ form.submit(class="btn btn-outline-info btn-md btn-block") }}
                 </div>
 
-                <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.login_google') }}"
+                <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.register_google') }}"
                    style="margin-top: 20px;"><i class="fa fa-google"></i> Через Google</a>
-                <a class="btn btn-dark btn-md btn-block" href="{{ url_for('users.login_github') }}"><i class="fa fa-github"></i> Через GitHub</a>
+                <a class="btn btn-dark btn-md btn-block" href="{{ url_for('users.register_github') }}"><i class="fa fa-github"></i> Через GitHub</a>
             </div>
         </form>
     </div>

@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 
 from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
-from flask_dance.contrib.google import make_google_blueprint, google
+from flask_dance.contrib.google import google
+from flask_dance.contrib.github import github
 
 from my_blog import db, bcrypt, google_blueprint
 from my_blog.models import User, Post, Role
@@ -39,7 +40,7 @@ def register():
         flash('Ваша учетная запись была создана!'
               ' Теперь вы можете войти в систему', 'success')
         return redirect(url_for('users.login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 @users.route('/complexity_password', methods=['POST'])
@@ -53,6 +54,89 @@ def complexity_password():
 def generate_password():
     """Генерация сложного пароля"""
     return jsonify({'password': complex_password_generator()})
+
+
+@users.route('/register_google')
+def register_google():
+    """Регистрация пользователя через Google"""
+
+    # Регистрация пользователя через google
+    if not google.authorized:
+         return f'<a href="{url_for("google.login")}">Sign in with Google</a>'
+    resp = google.get('/oauth2/v2/userinfo')  # Получаем профиль пользователя
+    assert resp.ok, resp.text
+    email = resp.json()['email']
+    print(resp)
+    #
+    # user = User.query.filter_by(email='guest@mail.ru').first()
+    # login_user(user, remember=True)
+    # return redirect(url_for('posts.all_posts'))
+    #
+    # # Если пользователь уже залогинен, то мы не можем войти в систему
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('main.home'))
+    #
+    # form = RegistrationForm()
+    # if form.validate_on_submit():
+    #     # Хеширование пароля
+    #     hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+    #
+    #     # Добавляем пользователя и его роль в базу данных
+    #     user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+    #     role = Role.query.filter_by(name='member').first()
+    #     user.roles.append(role)
+    #     db.session.add(user)
+    #     db.session.commit()
+    #
+    #     flash('Ваша учетная запись была создана!'
+    #           ' Теперь вы можете войти в систему', 'success')
+    #     return redirect(url_for('users.login'))
+    # return render_template('register.html', title='Регистрация', form=form)
+
+
+@users.route('/register_github')
+def register_github():
+    """Регистрация пользователя через GitHub"""
+
+    # Регистрация пользователя через github
+    # if not github.authorized:
+    #     return f'<a href="{url_for("github.login")}">Sign in with Google</a>'
+    # resp = google.get('/oauth2/v2/userinfo')  # Получаем профиль пользователя
+    # assert resp.ok, resp.text
+    # email = resp.json()['email']
+    # print(resp)
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    resp = github.get("/user")
+    assert resp.ok
+    print(resp)
+    # return "You are @{login} on GitHub".format(login=resp.json()["login"])
+
+    #
+    # user = User.query.filter_by(email='guest@mail.ru').first()
+    # login_user(user, remember=True)
+    # return redirect(url_for('posts.all_posts'))
+    #
+    # # Если пользователь уже залогинен, то мы не можем войти в систему
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('main.home'))
+    #
+    # form = RegistrationForm()
+    # if form.validate_on_submit():
+    #     # Хеширование пароля
+    #     hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+    #
+    #     # Добавляем пользователя и его роль в базу данных
+    #     user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+    #     role = Role.query.filter_by(name='member').first()
+    #     user.roles.append(role)
+    #     db.session.add(user)
+    #     db.session.commit()
+    #
+    #     flash('Ваша учетная запись была создана!'
+    #           ' Теперь вы можете войти в систему', 'success')
+    #     return redirect(url_for('users.login'))
+    # return render_template('register.html', title='Регистрация', form=form)
 
 
 @users.route("/login", methods=['GET', 'POST'])

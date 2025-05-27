@@ -29,8 +29,13 @@ class Config:
 
     DATABASE_CONNECT_OPTIONS = {}
 
-    GOOGLE_OAUTH_CLIENT_ID = '' # убрать при Push в GitHub
-    GOOGLE_OAUTH_CLIENT_SECRET = '' # убрать при Push в GitHub
+    # Переменные, используемые для авторизации через Google
+    # GOOGLE_OAUTH_CLIENT_ID = '' # убрать при Push в GitHub
+    # GOOGLE_OAUTH_CLIENT_SECRET = '' # убрать при Push в GitHub
+
+    # Переменные, используемые для авторизации через GitHub
+    # GITHUB_OAUTH_CLIENT_ID = '' # убрать при Push в GitHub
+    # GITHUB_OAUTH_CLIENT_SECRET = '' # убрать при Push в GitHub
 
     # Почта, используемая для рассылки сообщений
     MAIL_SERVER = 'smtp.mail.ru'

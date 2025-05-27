@@ -241,3 +241,15 @@ flask db init
 flask db migrate  
 * применить миграции
 flask db upgrade  
+
+### Регистрация приложения в GitHub (для авторизации через него)
+* Перейдите на страницу настроек разработчика GitHub: https://github.com/settings/developers
+* Нажмите на кнопку "New OAuth App"
+* Application name - my_blog
+* Homepage URL - http://localhost:5000
+* Application description - Дипломная работа my_blog
+* Authorization callback URL - http://localhost:5000/login/github/authorized
+* Скопировать Client ID
+* Сгенерировать Client secrets и скопировать себе
+* Страница приложения - https://github.com/settings/applications/3017811
+* Правда надо будет поменять путь с локалки на облако
