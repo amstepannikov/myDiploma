@@ -13,3 +13,8 @@ from my_blog.admin import app
 def home():
      print(current_user.is_authenticated)
      return 'Home'
+
+# Проверка email пользователей
+@app.route('/emails_check')
+def emails_check():
+     print('Проверка email пользователей')

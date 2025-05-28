@@ -2,10 +2,19 @@
 
 {% block body %}
 <div>
-    {% if current_user.is_authenticated %}
-    <h1>Flask-Admin example</h1>
-    {% else %}
-    <h1>Тебя сюды не звали уйди</h1>
-    {% endif %}
+    <h1>Панель администратора</h1>
+
+    <div style="margin-top: 40px;">
+        <p>Проверка email на утечку через API -
+            <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount" style="margin-top: 30px;">Have I Been Pwned API v3</a><br>
+            Учитываются все email-ы пользователей, кроме заблокированных<br>
+        </p>
+        <a href="{{ url_for('admin.emails_check') }}">Запустить проверку email</a>
+        <!--Кнопка Зарегистрироваться-->
+        <a class="btn btn-secondary btn-md btn-block" href="{{ url_for('users.login_guest') }}" style="margin-top: 30px;">Войти как Гость</a>
+        <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.login_google') }}"><i class="fa fa-google"></i> Через Google</a>
+        <a class="btn btn-dark btn-md btn-block" href="{{ url_for('users.login_github') }}"><i class="fa fa-github"></i> Через GitHub</a>
+        <button>Нажми меня</button>
+    </div>
 </div>
 {% endblock %}
