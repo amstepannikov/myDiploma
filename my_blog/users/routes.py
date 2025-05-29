@@ -57,18 +57,35 @@ def generate_password():
     return jsonify({'password': complex_password_generator()})
 
 
-@users.route('/register_google')
-def register_google():
+@users.route('/go_google')
+def go_google():
     """Регистрация пользователя через Google"""
 
     # Регистрация пользователя через google
+    print('Пытаемся зайти, через google 1')
     if not google.authorized:
-         return f'<a href="{url_for("google.login")}">Sign in with Google</a>'
-    resp = google.get('/oauth2/v2/userinfo')  # Получаем профиль пользователя
+        print('Зашли, через google 11', google.authorized)
+        return redirect(url_for("google.login"))
+    print(123123)
+    return redirect(url_for('main.home'))
+
+
+@users.route('/login/google/authorized')
+def google_authorized():
+    """Регистрация пользователя через Google"""
+
+    # Регистрация пользователя через google
+    print('Пытаемся зайти, через google 2')
+    if not google.authorized:
+        print('Зашли, через google 12', google.authorized)
+        return redirect(url_for("google.login"))
+    resp = google.get('/oauth2/v2/userinfo', verify=False)  # Получаем профиль пользователя
     assert resp.ok, resp.text
     email = resp.json()['email']
+    print('Зашли, через google')
+    print(email)
     print(resp)
-    #
+    # #
     # user = User.query.filter_by(email='guest@mail.ru').first()
     # login_user(user, remember=True)
     # return redirect(url_for('posts.all_posts'))
@@ -93,6 +110,8 @@ def register_google():
     #           ' Теперь вы можете войти в систему', 'success')
     #     return redirect(url_for('users.login'))
     # return render_template('register.html', title='Регистрация', form=form)
+    # return redirect(url_for('posts.all_posts'))
+    return redirect(url_for('main.home'))
 
 
 @users.route('/register_github')
@@ -146,6 +165,7 @@ def login():
     Вход пользователя в систему
     :return: render_template - возвращает шаблон страницы login.html
     """
+    print(123)
     # Если пользователь уже залогинен, то мы сразу переходим к постам
     if current_user.is_authenticated:
         return redirect(url_for('posts.all_posts'))
@@ -180,19 +200,10 @@ def login_guest():
     return redirect(url_for('posts.all_posts'))
 
 
-@users.route('/login_google')
-def login_google():
-    """Авторизация пользователя через Google"""
-
-    # регистрация через google
-    # if not google.authorized:
-    #     return f'<a href="{url_for("google.login")}">Sign in with Google</a>'
-    # resp = google.get('/oauth2/v2/userinfo')  # Получаем профиль пользователя
-    # assert resp.ok, resp.text
-    # email = resp.json()['email']
-    # print(resp)
-
-    user = User.query.filter_by(email='guest@mail.ru').first()
+@users.route('/login_super_admin')
+def login_super_admin():
+    """Авторизация пользователя по умолчанию"""
+    user = User.query.filter_by(email='super_admin@mail.ru').first()
     login_user(user, remember=True)
     return redirect(url_for('posts.all_posts'))
 
@@ -246,15 +257,20 @@ def logout():
     Выход из системы
     :return: redirect - возвращает на главную страницу
     """
-    # token = google_blueprint.token["access_token"]
-    # resp = google.post(
-    #     "https://accounts.google.com/o/oauth2/revoke",
-    #     params={"token": token},
-    #     headers={"Content-Type": "application/x-www-form-urlencoded"}
-    # )
-    # assert resp.ok, resp.text
+    print('выход')
+    # Если пользователь авторизован через google, то мы должны удалить токен
+    if google.authorized:
+        print('выход google')
+        token = google_blueprint.token["access_token"]
+        resp = google.post(
+             "https://accounts.google.com/o/oauth2/revoke",
+             params={"token": token},
+             headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+        assert resp.ok, resp.text
+        del google_blueprint.token
+
     logout_user()
-    # del google_blueprint.token
     return redirect(url_for('main.home'))
 
 

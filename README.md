@@ -257,3 +257,24 @@ flask db upgrade
 * Сгенерировать Client secrets и скопировать себе
 * Страница приложения - https://github.com/settings/applications/3017811
 * Правда надо будет поменять путь с локалки на облако
+
+### Регистрация приложения в Google (для авторизации через него)
+* Перейдите на страницу Google Console: https://console.developers.google.com/project
+* Нажмите на "APIs & auth" в левом меню
+* Выберите "Credentials"
+* Отдельно нужно создать запись и для локалки и для облака
+* Нажмите "+ Create credentials" и выберите "OAuth client ID"
+* В Application type выбрать Web application
+* Name 
+  * для локалки localhost_myblog
+  * для облака render_myblog
+* Authorized JavaScript origins
+  * для локалки http://localhost:5000
+  * для облака https://my-blog-3273.onrender.com
+* Authorized redirect URIs (куда будет возврат после авторизации google)
+  * для локалки http://localhost:5000/login_google
+  * для облака https://my-blog-3273.onrender.com/login_google
+* Нажать на кнопку Greate
+* Application description - Дипломная работа my_blog
+* Authorization callback URL - http://localhost:5000/login/github/authorized
+* Скопировать Client ID и Client secrets

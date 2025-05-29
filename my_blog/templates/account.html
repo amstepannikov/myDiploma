@@ -1,36 +1,13 @@
 <!--Информация об аккаунте пользователя-->
 {% extends "layout.html" %}
 
-{% block head %}
-  <style>
-    .container{
-      margin-bottom: 0.8rem;
-    }
-
-    a{
-      color: #003049;
-    }
-
-    small{
-      color: lightslategray;
-    }
-
-    p{
-      color: rgb(43, 37, 37);
-    }
-    
-    /* i{
-      padding: 0px 7px;
-      cursor: pointer;
-    } */
-  </style>
-{% endblock head %}
-
-
 {% block content %}
-    <div class="content-section">
+
+    <div class="content-section col-6">
+
       <div class="media">
-        <img class="rounded-circle account-img" src="{{ avatar }}">
+        <!--Аватарка пользователя-->
+        <img class="rounded-circle account-img" title="Аватарка" src="{{ avatar }}">
         <div class="media-body">
           <h2 class="account-heading">{{ current_user.username }}</h2>
           <p class="text-secondary">{{ current_user.email }}</p>
@@ -41,47 +18,56 @@
           {{ form.hidden_tag() }}
           <fieldset class="form-group">
               <legend class="border-bottom mb-4">Аккаунт пользователя</legend>
+
+              <!--Имя пользователя-->
               <div class="form-group">
                   {{ form.username.label(class="form-control-label") }}
-
                   {% if form.username.errors %}
-                      {{ form.username(class="form-control form-control-lg is-invalid") }}
+                      {{ form.username(class="form-control is-invalid") }}
                       <div class="invalid-feedback">
                           {% for error in form.username.errors %}
                               <span>{{ error }}</span>
                           {% endfor %}
                       </div>
                   {% else %}
-                      {{ form.username(class="form-control form-control-lg") }}
+                      {{ form.username(class="form-control") }}
                   {% endif %}
               </div>
+
+              <!--Почта пользователя-->
               <div class="form-group">
                   {{ form.email.label(class="form-control-label") }}
                   {% if form.email.errors %}
-                      {{ form.email(class="form-control form-control-lg is-invalid") }}
+                      {{ form.email(class="form-control is-invalid") }}
                       <div class="invalid-feedback">
                           {% for error in form.email.errors %}
                               <span>{{ error }}</span>
                           {% endfor %}
                       </div>
                   {% else %}
-                      {{ form.email(class="form-control form-control-lg") }}
+                      {{ form.email(class="form-control") }}
                   {% endif %}
               </div>
+
+              <!--Обновление аватарки пользователя-->
               <div class="form-group">
                   {{ form.picture.label() }}
                   {{ form.picture(class="form-control-file") }}
                   {% if form.picture.errors %}
                       {% for error in form.picture.errors %}
-                          <span class="text-danger">{{ error }}</span></br>
+                          <span class="text-danger">{{ error }}</span><br>
                       {% endfor %}
                   {% endif %}
               </div>
+
           </fieldset>
+
+          <!--Кнопка обновления профиля пользователя-->
           <div class="form-group">
-              {{ form.submit(class="btn btn-outline-info") }}
+              {{ form.submit(class="btn btn-outline-info btn-md btn-block") }}
           </div>
-      </form>      
+
+      </form>
     </div>   
 
 {% endblock content %}

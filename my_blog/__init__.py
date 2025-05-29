@@ -28,6 +28,7 @@ google_blueprint = make_google_blueprint(
     client_secret=os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET', Config.GOOGLE_OAUTH_CLIENT_SECRET),
     scope=['profile', 'email']
 )
+print(os.environ.get('GOOGLE_OAUTH_CLIENT_ID', Config.GOOGLE_OAUTH_CLIENT_ID))
 
 # создаем макет для регистрации в github
 github_blueprint = make_github_blueprint(

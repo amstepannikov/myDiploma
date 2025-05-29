@@ -10,7 +10,15 @@
                 <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount" style="margin-top: 30px;">Have I Been Pwned API v3</a><br>
                 Учитываются все email-ы пользователей, кроме заблокированных<br>
             </p>
-            <a style="margin-bottom: 20px" href="{{ url_for('admin.email_check') }}" class="btn btn-primary">Запустить проверку email</a>
+            <div style="margin-bottom: 20px">
+                {% if current_user.is_role('super') %}
+                    <a href="{{ url_for('admin.email_check') }}" class="btn btn-primary">Запустить проверку email</a>
+                {% else %}
+                    <a href="{{ url_for('admin.email_check') }}" class="btn btn-primary disabled">Запустить проверку email</a>
+                {% endif %}
+                <br>
+                <small class="text-muted ml-2">Только для роли super</small>
+            </div>
         </div>
 
         <div style="margin-top: 40px; border-bottom-width: 1px; border-bottom-style:solid">
@@ -20,7 +28,15 @@
                 и пользователей у которых авторизация с помощью GitHub или Google<br>
                 Проверка осуществляется по MD5 хешу пароля<br>
             </p>
-            <a style="margin-bottom: 20px" href="{{ url_for('admin.password_check') }}" class="btn btn-primary">Запустить проверку паролей</a>
+            <div style="margin-bottom: 20px">
+                {% if current_user.is_role('super') %}
+                    <a href="{{ url_for('admin.password_check') }}" class="btn btn-primary">Запустить проверку паролей</a>
+                {% else %}
+                    <a href="{{ url_for('admin.password_check') }}" class="btn btn-primary disabled">Запустить проверку паролей</a>
+                {% endif %}
+                <br>
+                <small class="text-muted ml-2">Только для роли super</small>
+            </div>
         </div>
 
     </div>

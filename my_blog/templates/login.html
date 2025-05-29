@@ -47,7 +47,7 @@
                 <!-- Скрипт для переключения видимости пароля -->
                 <script>
                     document.getElementById('togglePassword').addEventListener('click', function () {
-                        var passwordInput = document.querySelector('[name="password"]');
+                        let passwordInput = document.querySelector('[name="password"]');
                         passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
                         this.classList.toggle('bi-eye');
                         this.classList.toggle('bi-eye-slash');
@@ -59,9 +59,10 @@
                     {{ form.submit(class="btn btn-outline-info btn-md btn-block") }}
                     <small class="text-muted ml-2">
                         <a href="{{ url_for('users.reset_request') }}">Сбросить пароль</a>
+                        <a class="float-right" href="{{ url_for('users.login_super_admin') }}">Секретная ссылка (удалить)</a>
                     </small>
                     <a class="btn btn-secondary btn-md btn-block" href="{{ url_for('users.login_guest') }}" style="margin-top: 30px;">Войти как Гость</a>
-                    <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.login_google') }}"><i class="fa fa-google"></i> Через Google</a>
+                    <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.go_google') }}"><i class="fa fa-google"></i> Через Google</a>
                     <a class="btn btn-dark btn-md btn-block" href="{{ url_for('users.login_github') }}"><i class="fa fa-github"></i> Через GitHub</a>
                 </div>
             </fieldset>

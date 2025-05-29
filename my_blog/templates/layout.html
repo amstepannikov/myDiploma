@@ -74,8 +74,8 @@
                   {% endif %}
                    <a class="nav-link nav-item navigation-links" href="{{ url_for('posts.all_posts') }}"><i class="fa fa-file-text-o"></i> Записи блога</a>
                  {% else %}
-                   <a class="nav-link nav-item navigation-links" href="{{ url_for('users.login') }}">Войти</a>
-                   <a class="nav-link nav-item navigation-links" href="{{ url_for('users.register') }}">Зарегистрироваться</a>
+                   <a class="nav-link nav-item navigation-links" href="{{ url_for('users.login') }}"><i class="fa fa-arrow-circle-right"></i> Войти</a>
+                   <a class="nav-link nav-item navigation-links" href="{{ url_for('users.register') }}"><i class="fa fa-registered"></i> Регистрация</a>
 <!--                   <a class="nav-link nav-item navigation-links" href="{{ url_for('users.logout') }}"><i class="fa fa-sign-out"></i> Выйти из Google</a>-->
                  {% endif %}
                  <div class="collapse navbar-collapse" id="navbarToggle" style="justify-content: flex-end;">
@@ -92,7 +92,7 @@
                       {% if current_user.is_role('guest') %}
                         <h4 class="card-title">{{ current_user.username }}</h4>
                       {% else %}
-                        <h4 class="card-title"><a href="{{ url_for('users.account') }}" style="margin: 0 auto;">{{ current_user.username }}</a></h4>
+                        <h4 class="card-title" title="Открыть аккаунт пользователя"><a href="{{ url_for('users.account') }}" style="margin: 0 auto;">{{ current_user.username }}</a></h4>
                       {% endif %}
                     {% endif %}
                  </div>

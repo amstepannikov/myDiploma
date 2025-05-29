@@ -75,7 +75,7 @@
                 <!-- Скрипт для переключения видимости пароля -->
                 <script>
                     document.getElementById('togglePassword').addEventListener('click', function () {
-                        var passwordInput = document.querySelector('[name="password"]');
+                        let passwordInput = document.querySelector('[name="password"]');
                         passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
                         this.classList.toggle('bi-eye');
                         this.classList.toggle('bi-eye-slash');
@@ -84,20 +84,20 @@
 
                 <!--Скрипт для подсказки о сложности пароля-->
                 <script>
-                    var passwordInput = document.querySelector('[name="password"]');
-                    var complexityLabel = document.getElementById('label_complexity');
-                    var timeoutId;
+                    let passwordInput = document.querySelector('[name="password"]');
+                    let complexityLabel = document.getElementById('label_complexity');
+                    let timeoutId;
 
                     passwordInput.addEventListener('input', function() {
                         clearTimeout(timeoutId);
                         timeoutId = setTimeout(function() {
-                            var passwordText = passwordInput.value;
-                            var xhr = new XMLHttpRequest();
+                            let passwordText = passwordInput.value;
+                            let xhr = new XMLHttpRequest();
                             xhr.open('POST', '/complexity_password', true);
                             xhr.setRequestHeader('Content-Type', 'application/json');
                             xhr.onreadystatechange = function() {
                                 if (xhr.readyState == 4 && xhr.status == 200) {
-                                    var response = JSON.parse(xhr.responseText);
+                                    let response = JSON.parse(xhr.responseText);
                                     complexityLabel.innerHTML = response.complexity;
                                 }
                             };
@@ -129,9 +129,10 @@
                     {{ form.submit(class="btn btn-outline-info btn-md btn-block") }}
                 </div>
 
-                <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.register_google') }}"
+                <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.google_authorized') }}"
                    style="margin-top: 20px;"><i class="fa fa-google"></i> Через Google</a>
-                <a class="btn btn-dark btn-md btn-block" href="{{ url_for('users.register_github') }}"><i class="fa fa-github"></i> Через GitHub</a>
+                <a class="btn btn-dark btn-md btn-block" href="{{ url_for('users.register_github') }}">
+                    <i class="fa fa-github"></i> Через GitHub</a>
             </div>
         </form>
     </div>
