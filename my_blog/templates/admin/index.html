@@ -4,17 +4,25 @@
 <div>
     <h1>Панель администратора</h1>
 
-    <div style="margin-top: 40px;">
-        <p>Проверка email на утечку через API -
-            <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount" style="margin-top: 30px;">Have I Been Pwned API v3</a><br>
-            Учитываются все email-ы пользователей, кроме заблокированных<br>
-        </p>
-        <a href="{{ url_for('admin.emails_check') }}">Запустить проверку email</a>
-        <!--Кнопка Зарегистрироваться-->
-        <a class="btn btn-secondary btn-md btn-block" href="{{ url_for('users.login_guest') }}" style="margin-top: 30px;">Войти как Гость</a>
-        <a class="btn btn-outline-success btn-md btn-block" href="{{ url_for('users.login_google') }}"><i class="fa fa-google"></i> Через Google</a>
-        <a class="btn btn-dark btn-md btn-block" href="{{ url_for('users.login_github') }}"><i class="fa fa-github"></i> Через GitHub</a>
-        <button>Нажми меня</button>
+    <div style="margin-top: 40px">
+        <div style="border-bottom-width: 1px; border-bottom-style:solid">
+            <p>Проверка email на утечку через API -
+                <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount" style="margin-top: 30px;">Have I Been Pwned API v3</a><br>
+                Учитываются все email-ы пользователей, кроме заблокированных<br>
+            </p>
+            <a style="margin-bottom: 20px" href="{{ url_for('admin.email_check') }}" class="btn btn-primary">Запустить проверку email</a>
+        </div>
+
+        <div style="margin-top: 40px; border-bottom-width: 1px; border-bottom-style:solid">
+            <p>Проверка паролей на утечку через API -
+                <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount" style="margin-top: 30px;">Have I Been Pwned API v3</a><br>
+                Учитываются все пароли пользователей, кроме заблокированных,<br>
+                и пользователей у которых авторизация с помощью GitHub или Google<br>
+                Проверка осуществляется по MD5 хешу пароля<br>
+            </p>
+            <a style="margin-bottom: 20px" href="{{ url_for('admin.password_check') }}" class="btn btn-primary">Запустить проверку паролей</a>
+        </div>
+
     </div>
 </div>
 {% endblock %}
