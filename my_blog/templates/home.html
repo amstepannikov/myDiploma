@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 
 {% block style %}
-    <style>
-        body:before {
+<style>
+    body:before {
         content: ' ';
         display: block;
         position: fixed;
@@ -17,54 +17,54 @@
         background-repeat: no-repeat;
         background-position: 50% 30%;
         background-size: cover;
-        }
+    }
 
-        .container{
-            position: relative;
-            z-index: 5;
-        }
+    .container{
+        position: relative;
+        z-index: 5;
+    }
 
-        .heading > h1{
-            font-size: 55px;
-            font-family: 'Alice', serif;
-            color: black;
-            text-shadow: 2px 2px #a44a3f;
-        }
+    .heading > h1{
+        font-size: 55px;
+        font-family: 'Alice', serif;
+        color: black;
+        text-shadow: 2px 2px #a44a3f;
+    }
 
-        .heading > h2{
-            font-size: 35px;
-            font-family: 'Alice', serif;
-            color: black;
-            text-shadow: 2px 2px #a44a3f;
-        }
+    .heading > h2{
+        font-size: 35px;
+        font-family: 'Alice', serif;
+        color: black;
+        text-shadow: 2px 2px #a44a3f;
+    }
 
-        .card-text{
-            text-align: justify;
-            color: rgb(43, 37, 37);
-            font-weight: 500;
-            font-size: 22px;
-        }
-    </style>
+    .card-text{
+        text-align: justify;
+        color: rgb(43, 37, 37);
+        font-weight: 500;
+        font-size: 22px;
+    }
+</style>
 {% endblock style %}
 
 {% block content %}
 <div class="container" style="margin: 12rem 4rem; text-align: center;">
     <div class="heading">
         <h1>Дипломная работа</h1>
-        <h2>Организация логинов и паролей, пользователей информационной системы <strong>"my_blog"</strong></h2>
+        <h2>Организация логинов и паролей пользователей информационной системы <strong>"my_blog"</strong></h2>
     </div>
     <hr class="w3-border-grey" style="margin:auto; width:40%;">
     <br>
     <div class="content-body">
         <p class="card-text" id="para">Создание учетной записи:проверка сложности пароля, генератор надежного пароля<br>
-        Авторизация через сторонние системы, с помощью google, GitHub<br>
-        Хеширование паролей в БД<br>
-        Защита от SQL-инъекций<br>
-        Проверка email и паролей на утечки. (сайт Have I Been Pwnedd)<br>
-        Блокировка учетной записи при утечке email и пароля<br>
-        Регулярная смена пароля<br>
-        Предупреждение пользователя<br>
-        Блокировка входа, если пароль не был сменен во время</p>
+            Авторизация через сторонние системы, с помощью google, GitHub<br>
+            Хеширование паролей в БД<br>
+            Защита от SQL-инъекций<br>
+            Проверка email и паролей на утечки. (сайт Have I Been Pwnedd)<br>
+            Блокировка учетной записи при утечке email и пароля<br>
+            Регулярная смена пароля<br>
+            Предупреждение пользователя<br>
+            Блокировка входа, если пароль не был сменен во время</p>
     </div>
     <br>
 </div>

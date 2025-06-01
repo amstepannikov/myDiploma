@@ -1,9 +1,8 @@
 from flask_admin import Admin
 
-from my_blog.models import User, Post, Role, RolesUsers
 from my_blog import db, create_app
+from my_blog.models import User, Post, Role, RolesUsers
 from .views import AdminPostView, AdminRoleView, AdminUserView, AdminUserRoleView, HomeAdminView
-
 
 app = create_app()
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'

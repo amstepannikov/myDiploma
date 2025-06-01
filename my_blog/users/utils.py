@@ -29,15 +29,17 @@ def save_picture(form_picture) -> str:
     return picture_fn
 
 
-def send_reset_email(user) -> None:
+def send_reset_email(user, additional_message='') -> None:
     """
     Отправляет письмо со ссылкой для сброса пароля пользователю
     :param user: Пользователь
+    :param additional_message: Дополнительно сообщение
     :return: None
     """
     token = user.get_reset_token()
     msg = Message('Запрос на сброс пароля', sender=current_app.config['DEFAULT_MAIL_SENDER'], recipients=[user.email])
-    msg.body = f'''Чтобы сбросить пароль,
+    msg.body = additional_message
+    msg.body += f'''Чтобы сбросить пароль,
      перейдите по следующей ссылке: {url_for('users.reset_token', token=token, _external=True)}.
      Если вы не делали этот запрос, тогда просто проигнорируйте это письмо и никаких изменений не будет.'''
     mail.send(msg)

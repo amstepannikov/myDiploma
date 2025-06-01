@@ -1,16 +1,17 @@
 from datetime import datetime, timedelta
+from hashlib import sha1
 
-from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app, jsonify
-from flask_login import login_user, current_user, logout_user, login_required
-from flask_dance.contrib.google import google
+from flask import render_template, url_for, flash, redirect, request, Blueprint, jsonify
 from flask_dance.contrib.github import github
+from flask_dance.contrib.google import google
+from flask_login import login_user, current_user, logout_user, login_required
 
 from my_blog import db, bcrypt, google_blueprint
-from my_blog.models import User, Post, Role
 from my_blog.configs import Config
-from my_blog.users.utils import save_picture, send_reset_email, evaluate_password_strength, complex_password_generator
+from my_blog.models import User, Post, Role
 from my_blog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                  RequestResetForm, ResetPasswordForm)
+from my_blog.users.utils import save_picture, send_reset_email, evaluate_password_strength, complex_password_generator
 
 # Создаем страницу/макета для users
 users = Blueprint('users', __name__)
@@ -27,8 +28,10 @@ def register():
         return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        # Хеширование пароля
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # Хеширование пароля с помощью bcrypt
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # Хеширование пароля с помощью sha1 - НЕ РЕКОМЕНДУЕТСЯ его использовать
+        hashed_password = sha1(form.password.data.encode()).hexdigest()
 
         # Добавляем пользователя и его роль в базу данных
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
@@ -53,7 +56,6 @@ def complexity_password():
 @users.route('/generate_password')
 def generate_password():
     """Генерация сложного пароля"""
-    print(123123)
     return jsonify({'password': complex_password_generator()})
 
 
@@ -175,8 +177,10 @@ def login():
     # Если пользователь уже есть, то мы не можем зарегистрировать пользователя с таким же адресом электронной почты
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        # Если пользователь существует и пароль верный, то ...
-        user_true = user and bcrypt.check_password_hash(user.password, form.password.data)
+        # Если пользователь существует и пароль верный, то ... (используя bcrypt)
+        # user_true = user and bcrypt.check_password_hash(user.password, form.password.data)
+        # Хеширование пароля с помощью sha1 - НЕ РЕКОМЕНДУЕТСЯ его использовать
+        user_true = user and user.password == sha1(form.password.data.encode()).hexdigest()
         if user_true and not user.is_active:
             flash('Аккаунт заблокирован!', 'внимание')
         elif user_true and user.date_change_password + timedelta(days=Config.PASSWORD_TIME) < datetime.now():
@@ -195,7 +199,7 @@ def login():
 @users.route('/login_guest')
 def login_guest():
     """Авторизация пользователя по умолчанию"""
-    user = User.query.filter_by(email='guest@mail.ru').first()
+    user = User.query.filter_by(email='guest_test@mail.ru').first()
     login_user(user, remember=True)
     return redirect(url_for('posts.all_posts'))
 
@@ -203,7 +207,7 @@ def login_guest():
 @users.route('/login_super_admin')
 def login_super_admin():
     """Авторизация пользователя по умолчанию"""
-    user = User.query.filter_by(email='super_admin@mail.ru').first()
+    user = User.query.filter_by(email='super_admin_test@mail.ru').first()
     login_user(user, remember=True)
     return redirect(url_for('posts.all_posts'))
 
@@ -211,7 +215,7 @@ def login_super_admin():
 @users.route('/login_github')
 def login_github():
     """Авторизация пользователя через Github"""
-    user = User.query.filter_by(email='guest@mail.ru').first()
+    user = User.query.filter_by(email='guest_test@mail.ru').first()
     login_user(user, remember=True)
     return redirect(url_for('posts.all_posts'))
 
@@ -246,7 +250,7 @@ def account():
             .paginate(page=page, per_page=5)
         avatar = url_for('static', filename='avatars/' + current_user.avatar)
         return render_template('account.html', title='Аккаунт',
-                           avatar=avatar, form=form, posts=posts, user=user)
+                               avatar=avatar, form=form, posts=posts, user=user)
     avatar = url_for('static', filename='avatars/' + current_user.avatar)
     return render_template('account.html', title='Аккаунт', avatar=avatar, form=form)
 
@@ -263,9 +267,9 @@ def logout():
         print('выход google')
         token = google_blueprint.token["access_token"]
         resp = google.post(
-             "https://accounts.google.com/o/oauth2/revoke",
-             params={"token": token},
-             headers={"Content-Type": "application/x-www-form-urlencoded"}
+            "https://accounts.google.com/o/oauth2/revoke",
+            params={"token": token},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
         )
         assert resp.ok, resp.text
         del google_blueprint.token
@@ -327,7 +331,10 @@ def reset_token(token):
         return redirect(url_for('users.reset_request'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # Хеширование пароля с помощью bcrypt
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # Хеширование пароля с помощью sha1 - НЕ РЕКОМЕНДУЕТСЯ его использовать
+        hashed_password = sha1(form.password.data.encode()).hexdigest()
         user.password = hashed_password
         db.session.commit()
         flash('Ваш пароль был обновлен! Теперь вы можете авторизоваться', 'success')
