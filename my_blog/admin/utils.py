@@ -1,18 +1,37 @@
-import os
-import string
-import secrets
+import csv
 import requests
 
-from secrets import token_hex
-from PIL import Image
-from flask import url_for, current_app
-from flask_mail import Message
-from sqlalchemy import create_engine, Column, Integer, String, select
-
-from my_blog import mail
 from my_blog import db
 from my_blog.models import User
 from my_blog.users.utils import send_reset_email
+
+
+def checked_compromised_emails() -> list[list[int | str]]:
+    """
+    Проверка почты на утечки
+    :return: список пользователей
+    """
+
+    # Берем только активные аккаунты и тип my_blog
+    users = db.session.query(User).filter_by(is_active=True).filter_by(auth_type='my_blog').all()
+
+    with open('my_blog/data/leaked_emails.csv', encoding='utf-8') as file:
+        leaked_emails = set(line.strip().lower() for line in file if '@' in line)
+
+    checking_email = []
+    for user in users:
+
+        if user.email in leaked_emails:
+            lst = [user.username, user.email]
+            # Если НЕ тестовая почта, то отправляем сообщение на почту
+            if 'test@' in user.email:
+                lst.append('тестовая почта')
+            else:
+                lst.append('письмо отправлено')
+                email_message = f'Уважаемый {user.username}! Администрация my_blog выявила, что ваш email скомпрометирован, просим сменить ваш пароль\n'
+                send_reset_email(user, email_message)
+            checking_email.append(lst)
+    return checking_email
 
 
 def checking_passwords_leaks() -> list[list[int | str]]:

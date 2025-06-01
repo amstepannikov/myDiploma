@@ -3,7 +3,7 @@ from flask_admin import AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
 
-from my_blog.admin.utils import checking_passwords_leaks
+from my_blog.admin.utils import checking_passwords_leaks, checked_compromised_emails
 
 
 class AdminMixin:
@@ -29,13 +29,13 @@ class HomeAdminView(AdminMixin, AdminIndexView):
     @expose('/email_check')
     def email_check(self):
         # Ваш код здесь
-        print('Я в функции email_check')
-        return redirect(url_for('admin.index'))
+        results = checked_compromised_emails()
+        return self.render('admin/index.html', results_email_check=results)
 
     @expose('/password_check')
     def password_check(self):
         results = checking_passwords_leaks()
-        return self.render('admin/index.html', results=results)
+        return self.render('admin/index.html', results_password_check=results)
 
 
 class AdminPostView(AdminMixin, ModelView):

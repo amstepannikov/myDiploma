@@ -6,9 +6,9 @@
 
     <div style="margin-top: 40px">
         <div style="border-bottom-width: 1px; border-bottom-style:solid">
-            <p>Проверка email на утечку через API -
-                <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount" style="margin-top: 30px;">Have I Been Pwned API v3</a><br>
+            <p>Проверка email на утечку используя файл скомпрометированной почты<br>
                 Учитываются все email-ы пользователей, кроме заблокированных<br>
+                и пользователей у которых авторизация с помощью GitHub или Google<br>
             </p>
             <div style="margin-bottom: 20px">
                 {% if current_user.is_role('super') %}
@@ -18,13 +18,32 @@
                 {% endif %}
                 <br>
                 <small class="text-muted ml-2">Только для роли super</small>
+
+                {% if results_email_check %}
+                    <br>
+                    <h4>Результат проверки почты (только скомпрометированная почта)</h4>
+                    <table class="table table-bordered table-sm">
+                        <tr>
+                            <th>UserName</th>
+                            <th>Email</th>
+                            <th>Оправка письма</th>
+                        </tr>
+                        {% for item in results_email_check %}
+                            <tr>
+                                <td>{{item[0]}}</td>
+                                <td>{{item[1]}}</td>
+                                <td>{{item[2]}}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
             </div>
         </div>
 
         <div style="margin-top: 40px; border-bottom-width: 1px; border-bottom-style:solid">
             <p>Проверка паролей на утечку через API -
                 <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount" style="margin-top: 30px;">Have I Been Pwned API v3</a><br>
-                Учитываются все пароли пользователей, кроме заблокированных,<br>
+                Учитываются все пароли пользователей, кроме заблокированных<br>
                 и пользователей у которых авторизация с помощью GitHub или Google<br>
                 Проверка осуществляется по MD5 хешу пароля<br>
             </p>
@@ -37,7 +56,7 @@
                 <br>
                 <small class="text-muted ml-2">Только для роли super</small>
 
-                {% if results %}
+                {% if results_password_check %}
                     <br>
                     <h4>Результат проверки паролей</h4>
                     <table class="table table-bordered table-sm">
@@ -48,7 +67,7 @@
                             <th>Действие с паролем</th>
                             <th>Оправка письма</th>
                         </tr>
-                        {% for item in results %}
+                        {% for item in results_password_check %}
                             <tr>
                                 <td>{{item[0]}}</td>
                                 <td>{{item[1]}}</td>
