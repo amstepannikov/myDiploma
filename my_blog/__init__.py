@@ -24,8 +24,9 @@ serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
 
 # создаем макет для регистрации в google
 google_blueprint = make_google_blueprint(
-    client_id=os.environ.get('GOOGLE_OAUTH_CLIENT_ID', Config.GOOGLE_OAUTH_CLIENT_ID),
-    client_secret=os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET', Config.GOOGLE_OAUTH_CLIENT_SECRET),
+    client_id=Config.GOOGLE_OAUTH_CLIENT_ID,
+    client_secret=Config.GOOGLE_OAUTH_CLIENT_SECRET,
+    redirect_url='/login_google',
     scope=['profile', 'email']
 )
 

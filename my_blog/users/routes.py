@@ -48,6 +48,7 @@ def register():
 
 @users.route('/complexity_password', methods=['POST'])
 def complexity_password():
+    """Оценка сложности пароля"""
     data = request.get_json()
     complexity = f"({evaluate_password_strength(data['text'])})"
     return jsonify({'complexity': complexity}), 200
@@ -59,65 +60,53 @@ def generate_password():
     return jsonify({'password': complex_password_generator()})
 
 
-@users.route('/go_google')
-def go_google():
-    """Регистрация пользователя через Google"""
+@users.route('/login_google')
+def login_google():
+    """Регистрация/авторизация пользователя через Google"""
 
-    # Регистрация пользователя через google
-    print('Пытаемся зайти, через google 1')
+    # Авторизация пользователя через google
     if not google.authorized:
-        print('Зашли, через google 11', google.authorized)
-        return redirect(url_for("google.login"))
-    print(123123)
-    return redirect(url_for('main.home'))
-
-
-@users.route('/login/google/authorized')
-def google_authorized():
-    """Регистрация пользователя через Google"""
-
-    # Регистрация пользователя через google
-    print('Пытаемся зайти, через google 2')
-    if not google.authorized:
-        print('Зашли, через google 12', google.authorized)
         return redirect(url_for("google.login"))
     resp = google.get('/oauth2/v2/userinfo', verify=False)  # Получаем профиль пользователя
     assert resp.ok, resp.text
     email = resp.json()['email']
     print('Зашли, через google')
-    print(email)
-    print(resp)
-    # #
-    # user = User.query.filter_by(email='guest@mail.ru').first()
-    # login_user(user, remember=True)
-    # return redirect(url_for('posts.all_posts'))
-    #
-    # # Если пользователь уже залогинен, то мы не можем войти в систему
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('main.home'))
-    #
-    # form = RegistrationForm()
-    # if form.validate_on_submit():
-    #     # Хеширование пароля
-    #     hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-    #
-    #     # Добавляем пользователя и его роль в базу данных
-    #     user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-    #     role = Role.query.filter_by(name='member').first()
-    #     user.roles.append(role)
-    #     db.session.add(user)
-    #     db.session.commit()
-    #
-    #     flash('Ваша учетная запись была создана!'
-    #           ' Теперь вы можете войти в систему', 'success')
-    #     return redirect(url_for('users.login'))
-    # return render_template('register.html', title='Регистрация', form=form)
-    # return redirect(url_for('posts.all_posts'))
-    return redirect(url_for('main.home'))
+    #print(resp.json())
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        # Добавляем пользователя и его роль в базу данных
+        user = User(username=resp.json()['name'], email=email, password='', auth_type='google')
+        role = Role.query.filter_by(name='member').first()
+        user.roles.append(role)
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Ваша учетная запись была создана!'
+              ' Теперь вы можете войти в систему', 'success')
+    elif user and not user.is_active:
+        flash('Аккаунт заблокирован!', 'внимание')
+
+        print('выход google')
+        token = google_blueprint.token["access_token"]
+        resp = google.post(
+            "https://accounts.google.com/o/oauth2/revoke",
+            params={"token": token},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+        assert resp.ok, resp.text
+        del google_blueprint.token
+
+        return redirect(url_for('users.login'))
+
+    login_user(user, remember=True)
+    return redirect(url_for('posts.all_posts'))
 
 
-@users.route('/register_github')
-def register_github():
+
+@users.route('/login_github')
+def login_github():
     """Регистрация пользователя через GitHub"""
 
     # Регистрация пользователя через github
@@ -167,7 +156,6 @@ def login():
     Вход пользователя в систему
     :return: render_template - возвращает шаблон страницы login.html
     """
-    print(123)
     # Если пользователь уже залогинен, то мы сразу переходим к постам
     if current_user.is_authenticated:
         return redirect(url_for('posts.all_posts'))
@@ -208,14 +196,6 @@ def login_guest():
 def login_super_admin():
     """Авторизация пользователя по умолчанию"""
     user = User.query.filter_by(email='super_admin_test@mail.ru').first()
-    login_user(user, remember=True)
-    return redirect(url_for('posts.all_posts'))
-
-
-@users.route('/login_github')
-def login_github():
-    """Авторизация пользователя через Github"""
-    user = User.query.filter_by(email='guest_test@mail.ru').first()
     login_user(user, remember=True)
     return redirect(url_for('posts.all_posts'))
 
