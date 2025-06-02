@@ -6,7 +6,7 @@ from flask_dance.contrib.github import github
 from flask_dance.contrib.google import google
 from flask_login import login_user, current_user, logout_user, login_required
 
-from my_blog import db, bcrypt, google_blueprint
+from my_blog import db, bcrypt, google_blueprint, github_blueprint
 from my_blog.configs import Config
 from my_blog.models import User, Post, Role
 from my_blog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
@@ -90,13 +90,17 @@ def login_google():
 
         print('выход google')
         token = google_blueprint.token["access_token"]
-        resp = google.post(
-            "https://accounts.google.com/o/oauth2/revoke",
-            params={"token": token},
-            headers={"Content-Type": "application/x-www-form-urlencoded"}
-        )
-        assert resp.ok, resp.text
-        del google_blueprint.token
+        if token:
+            try:
+                resp = google.post(
+                    "https://accounts.google.com/o/oauth2/revoke",
+                    params={"token": token},
+                    headers={"Content-Type": "application/x-www-form-urlencoded"}
+                )
+                assert resp.ok, resp.text
+            except:
+                pass
+            del google_blueprint.token
 
         return redirect(url_for('users.login'))
 
@@ -117,10 +121,14 @@ def login_github():
     # email = resp.json()['email']
     # print(resp)
     if not github.authorized:
+        print('Вход github')
         return redirect(url_for("github.login"))
-    resp = github.get("/user")
-    assert resp.ok
-    print(resp)
+    print('Зашли, через github')
+    # resp = github.get("/user", verify=False)
+    # assert resp.ok
+    # print(resp.json())
+
+    return redirect(url_for('users.login'))
     # return "You are @{login} on GitHub".format(login=resp.json()["login"])
 
     #
@@ -242,17 +250,31 @@ def logout():
     :return: redirect - возвращает на главную страницу
     """
     print('выход')
+    print('google.authorized:', google.authorized)
+    print('github.authorized:', github.authorized)
     # Если пользователь авторизован через google, то мы должны удалить токен
     if google.authorized:
         print('выход google')
         token = google_blueprint.token["access_token"]
-        resp = google.post(
-            "https://accounts.google.com/o/oauth2/revoke",
-            params={"token": token},
-            headers={"Content-Type": "application/x-www-form-urlencoded"}
-        )
-        assert resp.ok, resp.text
-        del google_blueprint.token
+        if token:
+            try:
+                resp = google.post(
+                    "https://accounts.google.com/o/oauth2/revoke",
+                    params={"token": token},
+                    headers={"Content-Type": "application/x-www-form-urlencoded"}
+                )
+                assert resp.ok, resp.text
+            except:
+                pass
+            del google_blueprint.token
+
+
+    # Если пользователь авторизован через github, то мы должны удалить токен
+    if github.authorized:
+        print('выход github')
+        token = github.token
+        if token:
+            github.token = None
 
     logout_user()
     return redirect(url_for('main.home'))
