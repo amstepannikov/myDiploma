@@ -45,16 +45,18 @@ class AdminPostView(AdminMixin, ModelView):
 
 class AdminRoleView(AdminMixin, ModelView):
     """Создание вида таблицы Role, чтобы можно было редактировать данные в админке"""
-    pass
+    column_list = ['name', 'description']
+    can_create = False
+    can_edit = False
+    can_delete = False
 
 
 class AdminUserView(AdminMixin, ModelView):
     """Создание вида таблицы User, чтобы можно было редактировать данные в админке"""
-    column_exclude_list = ('password',)  # Не редактировать поле password
-    # inline_models = (RolesUsers,) # Отображение роли пользователя на странице пользователя
 
-
-class AdminUserRoleView(AdminMixin, ModelView):
-    """Создание вида таблицы Role, чтобы можно было редактировать данные в админке"""
-    form_columns = ('user_id', 'role_id')
-    # inline_models = (Role,)
+    # Не отображать поле password
+    column_exclude_list = ('password',)
+    # Запрещаем создавать запись
+    can_create = False
+    # Разрешаем редактировать только поле is_active
+    form_edit_rules = ('is_active', )
