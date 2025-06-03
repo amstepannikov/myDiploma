@@ -6,18 +6,31 @@ from my_blog import db, login_manager, serializer
 
 
 class User(db.Model, UserMixin):
-    """
-    Таблица пользователей
-    """
+    """Таблица пользователей"""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(20), nullable=False, default='default.png')
-    password = db.Column(db.String(60), nullable=False)
+    avatar = db.Column(db.String(20), nullable=False, default='default.png')
+    password = db.Column(db.String(60), nullable=True)
+    is_active = db.Column(db.Integer(), nullable=False, default=1)
+    date_change_password = db.Column(db.DateTime(), nullable=True, default=datetime.now)
+    auth_type = db.Column(db.String(20), nullable=False, default='my_blog') # тип авторизации (my_blog, google, github)
     posts = db.relationship('Post', backref='author', lazy=True)  # связь с таблицей постов
+    roles = db.relationship('Role', secondary='roles_users', backref=db.backref('users', lazy='dynamic'))
 
     def __repr__(self):
-        return f"Пользователь('{self.username}, {self.email}', '{self.image_file}')"
+        return f"Пользователь('{self.username}, {self.email}', '{self.avatar}')"
+
+    def is_role(self, role):
+        """
+        Проверяет, является ли пользователь ролью
+        :param role: роль, которую нужно проверить
+        :return: True или False
+        """
+        for i in self.roles:
+            if i.name == role:
+                return True
+        return False
 
     def get_reset_token(self):
         """
@@ -42,15 +55,34 @@ class User(db.Model, UserMixin):
             decoded_data = serializer.loads(token, max_age=max_age, salt="email-confirm")
             user_id = decoded_data['user_id']
             user = User.query.get(user_id)
-        except Exception as e:
+        except Exception:
              return None
         return user
 
 
+class Role(db.Model):
+    """Таблица ролей пользователей"""
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
+    def __str__(self):
+        return self.name
+
+    def __hash__(self):
+        return hash(self.name)
+
+
+class RolesUsers(db.Model):
+    """Таблица для связки пользователей и ролей"""
+    __tablename__ = 'roles_users'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column('user_id', db.Integer(), db.ForeignKey('user.id'))
+    role_id = db.Column('role_id', db.Integer(), db.ForeignKey('role.id'))
+
+
 class Post(db.Model):
-    """
-    Таблица постов
-    """
+    """Таблица постов"""
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.now)

@@ -1,0 +1,86 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div>
+    <h1>Панель администратора</h1>
+
+    <div style="margin-top: 40px">
+        <div style="border-bottom-width: 1px; border-bottom-style:solid">
+            <p>Проверка email на утечку используя файл скомпрометированной почты<br>
+                Учитываются все email-ы пользователей, кроме заблокированных<br>
+                и пользователей у которых авторизация с помощью GitHub или Google<br>
+            </p>
+            <div style="margin-bottom: 20px">
+                {% if current_user.is_role('super') %}
+                    <a href="{{ url_for('admin.email_check') }}" class="btn btn-primary">Запустить проверку email</a>
+                {% else %}
+                    <a href="{{ url_for('admin.email_check') }}" class="btn btn-primary disabled">Запустить проверку email</a>
+                {% endif %}
+                <br>
+                <small class="text-muted ml-2">Только для роли super</small>
+
+                {% if results_email_check %}
+                    <br>
+                    <h4>Результат проверки почты (только скомпрометированная почта)</h4>
+                    <table class="table table-bordered table-sm">
+                        <tr>
+                            <th>UserName</th>
+                            <th>Email</th>
+                            <th>Оправка письма</th>
+                        </tr>
+                        {% for item in results_email_check %}
+                            <tr>
+                                <td>{{item[0]}}</td>
+                                <td>{{item[1]}}</td>
+                                <td>{{item[2]}}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; border-bottom-width: 1px; border-bottom-style:solid">
+            <p>Проверка паролей на утечку через API -
+                <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount" style="margin-top: 30px;">Have I Been Pwned API v3</a><br>
+                Учитываются все пароли пользователей, кроме заблокированных<br>
+                и пользователей у которых авторизация с помощью GitHub или Google<br>
+                Проверка осуществляется по MD5 хешу пароля<br>
+            </p>
+            <div style="margin-bottom: 20px">
+                {% if current_user.is_role('super') %}
+                    <a href="{{ url_for('admin.password_check') }}" class="btn btn-primary">Запустить проверку паролей</a>
+                {% else %}
+                    <a href="{{ url_for('admin.password_check') }}" class="btn btn-primary disabled">Запустить проверку паролей</a>
+                {% endif %}
+                <br>
+                <small class="text-muted ml-2">Только для роли super</small>
+
+                {% if results_password_check %}
+                    <br>
+                    <h4>Результат проверки паролей</h4>
+                    <table class="table table-bordered table-sm">
+                        <tr>
+                            <th>UserName</th>
+                            <th>Email</th>
+                            <th>Совпадений</th>
+                            <th>Действие с паролем</th>
+                            <th>Оправка письма</th>
+                        </tr>
+                        {% for item in results_password_check %}
+                            <tr>
+                                <td>{{item[0]}}</td>
+                                <td>{{item[1]}}</td>
+                                <td>{{item[2]}}</td>
+                                <td>{{item[3]}}</td>
+                                <td>{{item[4]}}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

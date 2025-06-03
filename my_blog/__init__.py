@@ -5,7 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
-from flask_dance.contrib.google import make_google_blueprint, google
+from flask_migrate import Migrate
+from flask_dance.contrib.google import make_google_blueprint
+from flask_dance.contrib.github import make_github_blueprint
 from itsdangerous import URLSafeTimedSerializer
 
 from my_blog.configs import Config
@@ -15,17 +17,26 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 bcrypt = Bcrypt()
 mail = Mail()
+migrate = Migrate()
 
 # Создаем объект сериализатора с секретным ключом
 serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
 
 # создаем макет для регистрации в google
 google_blueprint = make_google_blueprint(
-    client_id=Config.GOOGLE_OAUTH_CLIENT_ID,
-    client_secret=Config.GOOGLE_OAUTH_CLIENT_SECRET,
+    client_id=os.environ.get('GOOGLE_OAUTH_CLIENT_ID', Config.GOOGLE_OAUTH_CLIENT_ID),
+    client_secret=os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET', Config.GOOGLE_OAUTH_CLIENT_SECRET),
+    redirect_url='/login_google',
     scope=['profile', 'email']
 )
 
+# создаем макет для регистрации в github
+github_blueprint = make_github_blueprint(
+    client_id=os.environ.get('GITHUB_OAUTH_CLIENT_ID', Config.GITHUB_OAUTH_CLIENT_ID),
+    client_secret=os.environ.get('GITHUB_OAUTH_CLIENT_SECRET', Config.GITHUB_OAUTH_CLIENT_SECRET),
+    redirect_url='/login_github',
+    scope=['user:email']
+)
 
 def create_app():
     app = Flask(__name__)
@@ -42,6 +53,7 @@ def create_app():
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(google_blueprint, url_prefix='/login')
+    app.register_blueprint(github_blueprint, url_prefix='/login')
     app.register_blueprint(errors)
 
     # добавляем расширения
@@ -49,5 +61,6 @@ def create_app():
     login_manager.init_app(app)
     bcrypt.init_app(app)
     mail.init_app(app)
+    migrate.init_app(app, db)
 
     return app

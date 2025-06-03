@@ -1,13 +1,17 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint
-from flask_login import login_user, current_user, logout_user, login_required
-from flask_dance.contrib.google import make_google_blueprint, google
+from datetime import datetime, timedelta
+from hashlib import sha1
 
-from my_blog import db, bcrypt, google_blueprint
-from my_blog.models import User, Post
+from flask import render_template, url_for, flash, redirect, request, Blueprint, jsonify
+from flask_dance.contrib.github import github
+from flask_dance.contrib.google import google
+from flask_login import login_user, current_user, logout_user, login_required
+
+from my_blog import db, bcrypt, google_blueprint, github_blueprint
 from my_blog.configs import Config
-from my_blog.users.utils import save_picture, send_reset_email
+from my_blog.models import User, Post, Role
 from my_blog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                  RequestResetForm, ResetPasswordForm)
+from my_blog.users.utils import save_picture, send_reset_email, evaluate_password_strength, complex_password_generator
 
 # Создаем страницу/макета для users
 users = Blueprint('users', __name__)
@@ -16,7 +20,7 @@ users = Blueprint('users', __name__)
 @users.route("/register", methods=['GET', 'POST'])
 def register():
     """
-    Проверка пользователя в системе
+    Регистрация пользователя в системе
     :return: render_template - возвращает шаблон страницы register.html
     """
     # Если пользователь уже залогинен, то мы не можем войти в систему
@@ -24,49 +28,184 @@ def register():
         return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        # Хеширование пароля
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # Хеширование пароля с помощью bcrypt
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # Хеширование пароля с помощью sha1 - НЕ РЕКОМЕНДУЕТСЯ его использовать
+        hashed_password = sha1(form.password.data.encode()).hexdigest()
+
+        # Добавляем пользователя и его роль в базу данных
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        role = Role.query.filter_by(name='member').first()
+        user.roles.append(role)
         db.session.add(user)
         db.session.commit()
+
         flash('Ваша учетная запись была создана!'
               ' Теперь вы можете войти в систему', 'success')
         return redirect(url_for('users.login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Регистрация', form=form)
+
+
+@users.route('/complexity_password', methods=['POST'])
+def complexity_password():
+    """Оценка сложности пароля"""
+    data = request.get_json()
+    complexity = f"({evaluate_password_strength(data['text'])})"
+    return jsonify({'complexity': complexity}), 200
+
+
+@users.route('/generate_password')
+def generate_password():
+    """Генерация сложного пароля"""
+    return jsonify({'password': complex_password_generator()})
+
+
+@users.route('/login_google')
+def login_google():
+    """Регистрация/авторизация пользователя через Google"""
+
+    # Авторизация пользователя через google
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+    resp = google.get('/oauth2/v2/userinfo', verify=False)  # Получаем профиль пользователя
+    assert resp.ok, resp.text
+    email = resp.json()['email']
+    print('Зашли, через google')
+    #print(resp.json())
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        # Добавляем пользователя и его роль в базу данных
+        user = User(username=resp.json()['name'], email=email, password='', auth_type='google')
+        role = Role.query.filter_by(name='member').first()
+        user.roles.append(role)
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Ваша учетная запись была создана!'
+              ' Теперь вы можете войти в систему', 'success')
+    elif user and not user.is_active:
+        flash(f'Аккаунт {email} заблокирован!', 'внимание')
+
+        print('выход google')
+        token = google_blueprint.token["access_token"]
+        if token:
+            try:
+                resp = google.post(
+                    "https://accounts.google.com/o/oauth2/revoke",
+                    params={"token": token},
+                    headers={"Content-Type": "application/x-www-form-urlencoded"}
+                )
+                assert resp.ok, resp.text
+            except:
+                pass
+            del google_blueprint.token
+
+        return redirect(url_for('users.login'))
+
+    login_user(user, remember=True)
+    return redirect(url_for('posts.all_posts'))
+
+
+@users.route('/login_github')
+def login_github():
+    """Регистрация пользователя через GitHub"""
+
+    if not github.authorized:
+        print('Вход github')
+        return redirect(url_for("github.login"))
+    print('Зашли, через github')
+    resp = github.get("/user")
+    assert resp.ok
+    # print(resp.json())
+    email = resp.json()['email']
+
+    # Если почту нам не дали, запрашиваем её отдельно
+    if not email:
+        emails_resp = github.get("/user/emails")
+        if emails_resp.ok:
+            emails = emails_resp.json()
+            email = [e["email"] for e in emails if e["primary"]][0]
+
+    # Если почту нам всё равно не дали, то формируем её сами
+    if not email:
+        email = f'{resp.json["login"]}@users.noreply.github.com'
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        # Добавляем пользователя и его роль в базу данных
+        user = User(username=resp.json()['login'], email=email, password='', auth_type='github')
+        role = Role.query.filter_by(name='member').first()
+        user.roles.append(role)
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Ваша учетная запись была создана!'
+              ' Теперь вы можете войти в систему', 'success')
+    elif user and not user.is_active:
+        flash(f'Аккаунт {email} заблокирован!', 'внимание')
+
+        print('выход github')
+        token = github_blueprint.token["access_token"]
+        if token:
+            del github_blueprint.token
+
+        return redirect(url_for('users.login'))
+
+    login_user(user, remember=True)
+    return redirect(url_for('posts.all_posts'))
 
 
 @users.route("/login", methods=['GET', 'POST'])
 def login():
     """
-    Проверка пользователя в системе
+    Вход пользователя в систему
     :return: render_template - возвращает шаблон страницы login.html
     """
     # Если пользователь уже залогинен, то мы сразу переходим к постам
     if current_user.is_authenticated:
         return redirect(url_for('posts.all_posts'))
 
-    # регистрация через google
-    # if not google.authorized:
-    #     return f'<a href="{url_for("google.login")}">Sign in with Google</a>'
-    # resp = google.get('/oauth2/v2/userinfo')  # Получаем профиль пользователя
-    # assert resp.ok, resp.text
-    # email = resp.json()['email']
-    # print(resp)
-
     form = LoginForm()
 
     # Если пользователь уже есть, то мы не можем зарегистрировать пользователя с таким же адресом электронной почты
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        # Если пользователь существует и пароль верный, то авторизуем пользователя
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
+        # Если пользователь существует и пароль верный, то ... (используя bcrypt)
+        # user_true = user and bcrypt.check_password_hash(user.password, form.password.data)
+        # Хеширование пароля с помощью sha1 - НЕ РЕКОМЕНДУЕТСЯ его использовать
+        user_true = user and user.password == sha1(form.password.data.encode()).hexdigest()
+        if user_true and not user.is_active:
+            flash('Аккаунт заблокирован!', 'внимание')
+        elif user_true and user.date_change_password + timedelta(days=Config.PASSWORD_TIME) < datetime.now():
+            flash('Срок действия пароля истек! Смените пароль, нажав на Сброс пароля', 'внимание')
+        elif user_true:
+            login_user(user, remember=True)
             next_page = request.args.get('next')
+
             return redirect(next_page) if next_page else redirect(url_for('posts.all_posts'))
         else:
             flash('Войти не удалось. Пожалуйста, '
-                  'проверьте электронную почту и пароль', 'внимание')
+                  'проверьте электронную почту и пароль', 'error')
     return render_template('login.html', title='Аутентификация', form=form)
+
+
+@users.route('/login_guest')
+def login_guest():
+    """Авторизация пользователя по умолчанию"""
+    user = User.query.filter_by(email='guest_test@mail.ru').first()
+    login_user(user, remember=True)
+    return redirect(url_for('posts.all_posts'))
+
+
+@users.route('/login_super_admin')
+def login_super_admin():
+    """Авторизация пользователя по умолчанию"""
+    user = User.query.filter_by(email='super_admin_test@mail.ru').first()
+    login_user(user, remember=True)
+    return redirect(url_for('posts.all_posts'))
 
 
 @users.route("/account", methods=['GET', 'POST'])
@@ -80,7 +219,7 @@ def account():
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
+            current_user.avatar = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
         # Сохраняем изменения в базе данных
@@ -97,9 +236,11 @@ def account():
         posts = Post.query.filter_by(author=user) \
             .order_by(Post.date_posted.desc()) \
             .paginate(page=page, per_page=5)
-    image_file = url_for('static', filename='avatars/' + current_user.image_file)
-    return render_template('account.html', title='Аккаунт',
-                           image_file=image_file, form=form, posts=posts, user=user)
+        avatar = url_for('static', filename='avatars/' + current_user.avatar)
+        return render_template('account.html', title='Аккаунт',
+                               avatar=avatar, form=form, posts=posts, user=user)
+    avatar = url_for('static', filename='avatars/' + current_user.avatar)
+    return render_template('account.html', title='Аккаунт', avatar=avatar, form=form)
 
 
 @users.route("/logout")
@@ -108,15 +249,34 @@ def logout():
     Выход из системы
     :return: redirect - возвращает на главную страницу
     """
-    token = google_blueprint.token["access_token"]
-    resp = google.post(
-        "https://accounts.google.com/o/oauth2/revoke",
-        params={"token": token},
-        headers={"Content-Type": "application/x-www-form-urlencoded"}
-    )
-    assert resp.ok, resp.text
+    print('выход')
+    print('google.authorized:', google.authorized)
+    print('github.authorized:', github.authorized)
+    # Если пользователь авторизован через google, то мы должны удалить токен
+    if google.authorized:
+        print('выход google')
+        token = google_blueprint.token["access_token"]
+        if token:
+            try:
+                resp = google.post(
+                    "https://accounts.google.com/o/oauth2/revoke",
+                    params={"token": token},
+                    headers={"Content-Type": "application/x-www-form-urlencoded"}
+                )
+                assert resp.ok, resp.text
+            except:
+                pass
+            del google_blueprint.token
+
+
+    # Если пользователь авторизован через github, то мы должны удалить токен
+    if github.authorized:
+        print('выход github')
+        token = github.token
+        if token:
+            github.token = None
+
     logout_user()
-    del google_blueprint.token
     return redirect(url_for('main.home'))
 
 
@@ -173,7 +333,10 @@ def reset_token(token):
         return redirect(url_for('users.reset_request'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # Хеширование пароля с помощью bcrypt
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # Хеширование пароля с помощью sha1 - НЕ РЕКОМЕНДУЕТСЯ его использовать
+        hashed_password = sha1(form.password.data.encode()).hexdigest()
         user.password = hashed_password
         db.session.commit()
         flash('Ваш пароль был обновлен! Теперь вы можете авторизоваться', 'success')

@@ -23,12 +23,16 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
 }
 
+.card{
+  background-color: white;
+  box-shadow: 10px 10px 8px darkslategray;
+}
+
 .content-section {
   background: #ffffff;
   padding: 10px 20px;
   border: 1px solid #dddddd;
-  border-radius: 3px;
-  /* margin-bottom: 20px; */
+  box-shadow: 10px 10px 8px darkslategray;
 }
 
 .article-title {
