@@ -86,7 +86,7 @@ def login_google():
         flash('Ваша учетная запись была создана!'
               ' Теперь вы можете войти в систему', 'success')
     elif user and not user.is_active:
-        flash('Аккаунт заблокирован!', 'внимание')
+        flash(f'Аккаунт {email} заблокирован!', 'внимание')
 
         print('выход google')
         token = google_blueprint.token["access_token"]
@@ -108,54 +108,54 @@ def login_google():
     return redirect(url_for('posts.all_posts'))
 
 
-
 @users.route('/login_github')
 def login_github():
     """Регистрация пользователя через GitHub"""
 
-    # Регистрация пользователя через github
-    # if not github.authorized:
-    #     return f'<a href="{url_for("github.login")}">Sign in with Google</a>'
-    # resp = google.get('/oauth2/v2/userinfo')  # Получаем профиль пользователя
-    # assert resp.ok, resp.text
-    # email = resp.json()['email']
-    # print(resp)
     if not github.authorized:
         print('Вход github')
         return redirect(url_for("github.login"))
     print('Зашли, через github')
-    # resp = github.get("/user", verify=False)
-    # assert resp.ok
+    resp = github.get("/user")
+    assert resp.ok
     # print(resp.json())
+    email = resp.json()['email']
 
-    return redirect(url_for('users.login'))
-    # return "You are @{login} on GitHub".format(login=resp.json()["login"])
+    # Если почту нам не дали, запрашиваем её отдельно
+    if not email:
+        emails_resp = github.get("/user/emails")
+        if emails_resp.ok:
+            emails = emails_resp.json()
+            email = [e["email"] for e in emails if e["primary"]][0]
 
-    #
-    # user = User.query.filter_by(email='guest@mail.ru').first()
-    # login_user(user, remember=True)
-    # return redirect(url_for('posts.all_posts'))
-    #
-    # # Если пользователь уже залогинен, то мы не можем войти в систему
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('main.home'))
-    #
-    # form = RegistrationForm()
-    # if form.validate_on_submit():
-    #     # Хеширование пароля
-    #     hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-    #
-    #     # Добавляем пользователя и его роль в базу данных
-    #     user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-    #     role = Role.query.filter_by(name='member').first()
-    #     user.roles.append(role)
-    #     db.session.add(user)
-    #     db.session.commit()
-    #
-    #     flash('Ваша учетная запись была создана!'
-    #           ' Теперь вы можете войти в систему', 'success')
-    #     return redirect(url_for('users.login'))
-    # return render_template('register.html', title='Регистрация', form=form)
+    # Если почту нам всё равно не дали, то формируем её сами
+    if not email:
+        email = f'{resp.json["login"]}@users.noreply.github.com'
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        # Добавляем пользователя и его роль в базу данных
+        user = User(username=resp.json()['login'], email=email, password='', auth_type='github')
+        role = Role.query.filter_by(name='member').first()
+        user.roles.append(role)
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Ваша учетная запись была создана!'
+              ' Теперь вы можете войти в систему', 'success')
+    elif user and not user.is_active:
+        flash(f'Аккаунт {email} заблокирован!', 'внимание')
+
+        print('выход github')
+        token = github_blueprint.token["access_token"]
+        if token:
+            del github_blueprint.token
+
+        return redirect(url_for('users.login'))
+
+    login_user(user, remember=True)
+    return redirect(url_for('posts.all_posts'))
 
 
 @users.route("/login", methods=['GET', 'POST'])

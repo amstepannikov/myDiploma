@@ -18,17 +18,17 @@ WSGI-приложение
 Далее план будет расширяться, будет добавлен для каждого пункта процент готовности
 * Создаём приложение my_blog
    * окна пользователя
-     * авторизация - 80%       
+     * авторизация - 100%       
        * авторизация под гостём - 100% 
-       * авторизация через google - 20%
-       * авторизация через GitHub - 5%
+       * авторизация через google - 100%
+       * авторизация через GitHub - 100%
        * ввод email - 100%
        * ввод пароля - 100%
        * переход в Сброс пароля, через почту - 100%        
-     * регистрация - 70%       
-       * регистрация через google - 20%
-       * регистрация через GitHub - 5%
-       * проверка email - 80%
+     * регистрация - 100%       
+       * регистрация через google - 100%
+       * регистрация через GitHub - 100%
+       * проверка email - 100%
          * проверка на правильность формата - 100%
          * проверка на дубль (т.е. не должна уже быть в базе) - 100%
        * проверка пароля - 100% 
@@ -39,10 +39,9 @@ WSGI-приложение
          * кнопка показать/скрыть пароль - 100%
          * генератор пароля - 100% 
          * отображение сложности пароля - 100%
-     * профиль пользователя (при нажатии username рядом с аватаркой на панели) - 80%
+     * профиль пользователя (при нажатии username рядом с аватаркой на панели) - 100%
        * смена email (проверки см. регистрация) - 100% 
        * смена аватарки - 100%
-       * переход на ввод нового пароля (под вопросом, скорей останется только при регистрации, через почту) - 0%
      * Сброс пароля, через почту - 100%
        * проверка email - 100%
          * проверка на правильность формата - 100% 
@@ -61,21 +60,16 @@ WSGI-приложение
       * один пост - 100%
         * если пост владельца, то возможность удалять, править - 100%
       * создание поста - 100%
-   * админка - 20%
+   * админка - 100%
      * доступ к админке только пользователю с ролью admin - 100%
-     * редактирование/создание в таблицах - 30%
-       * User - 20%
-       * Post - 20%
-       * Role - 80%
+     * редактирование/создание/удаление в таблицах - 30%
+       * User - запретил редактирование/создание, можно редактировать только поле is_active 100%
+       * Post - 100%
+       * Role - запретил редактирование/создание 100%
+       * так и не осилил сделать полноценный редактор User/Role из-за связи многие-ко-многим
      * проверки (только для роли super)
        * проверка email на утечку через выгруженный файл - 100%
        * проверка на утечки паролей через API [Have I Been Pwned API v3](https://haveibeenpwned.com/API/v3#BreachesForAccount) - 100%
-
-#### Самое главное, что осталось доделать из плана:
-* авторизация через google - 20%
-* авторизация через GitHub - 5%
-* регистрация через google - 20%
-* регистрация через GitHub - 5%
 
 
 #### Проблемы:
@@ -248,14 +242,21 @@ flask db upgrade
 ### Регистрация приложения в GitHub (для авторизации через него)
 * Перейдите на страницу настроек разработчика GitHub: https://github.com/settings/developers
 * Нажмите на кнопку "New OAuth App"
+* Локалка
 * Application name - my_blog
 * Homepage URL - http://localhost:5000
 * Application description - Дипломная работа my_blog
 * Authorization callback URL - http://localhost:5000/login/github/authorized
 * Скопировать Client ID
 * Сгенерировать Client secrets и скопировать себе
-* Страница приложения - https://github.com/settings/applications/3017811
-* Правда надо будет поменять путь с локалки на облако
+* Облако Render
+* Application name - render_myblog
+* Homepage URL - https://my-blog-3273.onrender.com
+* Application description - Дипломная работа my_blog
+* Authorization callback URL - https://my-blog-3273.onrender.com/login/github/authorized
+* Скопировать Client ID
+* Сгенерировать Client secrets и скопировать себе
+
 
 ### Регистрация приложения в Google (для авторизации через него)
 * Перейдите на страницу Google Console: https://console.developers.google.com/project
@@ -265,15 +266,14 @@ flask db upgrade
 * Нажмите "+ Create credentials" и выберите "OAuth client ID"
 * В Application type выбрать Web application
 * Name 
-  * для локалки localhost_myblog
+  * для локалки myblog
   * для облака render_myblog
 * Authorized JavaScript origins
   * для локалки http://localhost:5000
   * для облака https://my-blog-3273.onrender.com
 * Authorized redirect URIs (куда будет возврат после авторизации google)
-  * для локалки http://localhost:5000/login_google
-  * для облака https://my-blog-3273.onrender.com/login_google
+  * для локалки http://localhost:5000/login/google/authorized
+  * для облака https://my-blog-3273.onrender.com/login/google/authorized
 * Нажать на кнопку Greate
 * Application description - Дипломная работа my_blog
-* Authorization callback URL - http://localhost:5000/login/github/authorized
 * Скопировать Client ID и Client secrets
